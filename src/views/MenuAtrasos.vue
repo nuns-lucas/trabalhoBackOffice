@@ -12,14 +12,14 @@
 
       <div class="linha-ocorrencias">
         <Cartao titulo="Avaria Reportadas" class="cartao-ocorrencia">
-          <ListaOcorrencias :ocorrencias="avarias" v-if="avarias.length > 0" />
+          <OcorrenciasCard :ocorrencias="avarias" v-if="avarias.length > 0" />
           <div v-else class="sem-ocorrencias">
             Nenhuma avaria reportada
           </div>
         </Cartao>
 
         <Cartao titulo="Atrasos Reportados" class="cartao-ocorrencia">
-          <ListaOcorrencias :ocorrencias="atrasos" v-if="atrasos.length > 0" />
+          <OcorrenciasCard :ocorrencias="atrasos" v-if="atrasos.length > 0" />
           <div v-else class="sem-ocorrencias">
             Nenhum atraso reportado
           </div>
@@ -34,7 +34,7 @@ import { defineComponent, computed } from 'vue';
 import Sidebar from '@/components/layout/Sidebar.vue';
 import StatusCard from '@/components/layout/StatusCard.vue';  // Alterado para StatusCard
 import Cartao from '@/components/ui/Cartao.vue';
-import ListaOcorrencias from '@/components/ocorrencias/ListaOcorrencias.vue';
+import OcorrenciasCard from '@/components/ocorrencias/ListOcorrenciasCard.vue';
 import { useOcorrencias } from '@/state/ocorrencias';
 
 export default defineComponent({
@@ -43,7 +43,7 @@ export default defineComponent({
     Sidebar,
     StatusCard,  // Alterado aqui
     Cartao,
-    ListaOcorrencias
+    OcorrenciasCard
   },
   setup() {
     const { estado } = useOcorrencias();

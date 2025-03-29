@@ -37,7 +37,7 @@ export default {
     // Filtra as 5 ocorrências mais recentes não resolvidas
     const ocorrenciasAtivas = computed(() => {
       return [...estado.ocorrencias]
-        .filter(o => o.status !== 'resolvido')
+        .filter(o => o.status !== 'Concluída')
         .sort((a, b) => new Date(b.data) - new Date(a.data))
         .slice(0, 5);
     });

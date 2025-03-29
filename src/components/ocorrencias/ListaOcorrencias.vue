@@ -1,33 +1,71 @@
 <template>
-  <div class="lista-ocorrencias">
-    <div
-      v-for="ocorrencia in ocorrencias"
-      :key="ocorrencia.id"
-      class="ocorrencia-card"
-      :class="'urgencia-' + ocorrencia.urgencia"
-    >
-      <div class="cabecalho">
-        <Etiqueta :nivel="ocorrencia.urgencia" />
-        <span class="data">{{ formatarData(ocorrencia.data) }}</span>
+  <div>
+    <!-- Filtro por tipo -->
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <div class="input-group">
+          <select 
+            v-model="filtroTipo" 
+            class="form-select"
+            @change="aplicarFiltros"
+          >
+            <option value="">Todos os tipos</option>
+            <option 
+              v-for="tipo in tiposProblema" 
+              :key="tipo" 
+              :value="tipo"
+            >
+              {{ formatarTipo(tipo) }}
+            </option>
+          </select>
+        </div>
       </div>
-      <p class="mensagem">{{ ocorrencia.mensagem }}</p>
-      <div class="rodape">
-        <span class="tipo">{{ formatarTipo(ocorrencia.tipo) }}</span>
-        <span class="status">{{ ocorrencia.status }}</span>
-      </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="ocorrencia in ocorrenciasFiltradas" :key="ocorrencia.id">
+            <td>
+              <Badge :status="ocorrencia.status" />
+            </td>
+            <td>{{ ocorrencia.nome }}</td>
+            <td>{{ ocorrencia.mensagem }}</td>
+            <td>
+              <span class="badge bg-secondary">
+                {{ formatarTipo(ocorrencia.tipo) }}
+              </span>
+            </td>
+            <td>{{ formatarData(ocorrencia.data) }}</td>
+          </tr>
+          <tr v-if="ocorrenciasFiltradas.length === 0">
+            <td colspan="6" class="text-center text-muted py-4">
+              Nenhuma ocorrência encontrada com os filtros atuais
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import Etiqueta from '@/components/ui/Etiqueta.vue';
+import { defineComponent, ref, computed } from 'vue';
+import Badge from '@/components/ui/Badge.vue';
 
 export default defineComponent({
-  name: 'ListaOcorrencias',
-  components: {
-    Etiqueta
-  },
+  name: 'TabelaOcorrencias',
+  components: { Badge },
   props: {
     ocorrencias: {
       type: Array,
@@ -35,21 +73,43 @@ export default defineComponent({
       default: () => []
     }
   },
+  setup(props) {
+    const filtroTipo = ref('');
+    
+    // Extrai todos os tipos únicos de problemas
+    const tiposProblema = computed(() => {
+      const tipos = new Set();
+      props.ocorrencias.forEach(oc => tipos.add(oc.tipo));
+      return Array.from(tipos);
+    });
+
+    // Aplica os filtros
+    const ocorrenciasFiltradas = computed(() => {
+      if (!filtroTipo.value) return props.ocorrencias;
+      
+      return props.ocorrencias.filter(
+        oc => oc.tipo === filtroTipo.value
+      );
+    });
+
+    const limparFiltros = () => {
+      filtroTipo.value = '';
+    };
+
+    return {
+      filtroTipo,
+      tiposProblema,
+      ocorrenciasFiltradas,
+      limparFiltros
+    };
+  },
   methods: {
     formatarData(data) {
-      if (!data) return 'Data não informada';
-
+      if (!data) return '--/--/----';
       try {
-        const options = {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        };
-        return new Date(data).toLocaleString('pt-PT', options);
+        return new Date(data).toLocaleDateString('pt-BR');
       } catch {
-        return data; // Fallback para o valor original se a formatação falhar
+        return data;
       }
     },
     formatarTipo(tipo) {
@@ -60,78 +120,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.lista-ocorrencias {
-  display: grid;
-  gap: 16px;
-  padding: 8px;
+.table {
+  margin-bottom: 0;
 }
-
-.ocorrencia-card {
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  border-left: 4px solid;
-}
-
-.ocorrencia-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.urgencia-alta {
-  border-left-color: #dc3545;
-}
-
-.urgencia-media {
-  border-left-color: #ffc107;
-}
-
-.urgencia-baixa {
-  border-left-color: #28a745;
-}
-
-.cabecalho {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.data {
+.table th {
+  font-weight: 600;
   font-size: 0.8rem;
-  color: #6c757d;
-}
-
-.mensagem {
-  margin: 0 0 12px 0;
-  font-size: 1rem;
-  line-height: 1.4;
-  color: #495057;
-}
-
-.rodape {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-}
-
-.tipo {
-  background: #f1f3f5;
-  padding: 4px 8px;
-  border-radius: 4px;
-  color: #495057;
-}
-
-.status {
-  color: #6c757d;
-  font-style: italic;
-}
-
-@media (max-width: 768px) {
-  .ocorrencia-card {
-    padding: 12px;
-  }
 }
 </style>

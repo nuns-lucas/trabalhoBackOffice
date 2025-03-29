@@ -1,61 +1,60 @@
 <template>
-  <div class="card p-3">
-    <h5 class="mb-3">{{ title }}</h5>
-    <div v-for="(report, index) in reports" :key="index" class="report-item d-flex align-items-center p-2 mb-2 rounded">
-      <div class="icon-container" :class="getUrgencyClass(report.urgency)">
-        <i class="bi bi-exclamation-circle-fill"></i>
-      </div>
-      <div class="ms-3">
-        <p class="mb-1 fw-bold">{{ report.message }}</p>
-        <small class="text-muted">{{ report.time }}</small>
-      </div>
+  <div class="reports-table">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Localização</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="ocorrencia in ocorrencias" :key="ocorrencia.id">
+            <td>{{ ocorrencia.id }}</td>
+            <td>{{ ocorrencia.tipo }}</td>
+            <td>{{ ocorrencia.localizacao }}</td>
+            <td>{{ formatDate(ocorrencia.data) }}</td>
+            <td>
+              <Badge :status="ocorrencia.status" />
+            </td>
+            <td>
+              <button 
+                class="btn btn-sm btn-primary me-2"
+                @click="$emit('view', ocorrencia)"
+              >
+                Ver
+              </button>
+              <button 
+                class="btn btn-sm btn-danger"
+                @click="$emit('delete', ocorrencia.id)"
+              >
+                Excluir
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: "ReportList",
-  props: {
-    title: String,
-    reports: Array
-  },
-  methods: {
-    getUrgencyClass(urgency) {
-      return urgency === "alta" ? "high-urgency" : urgency === "média" ? "medium-urgency" : "low-urgency";
-    }
-  }
+<script setup>
+import { onMounted } from 'vue';
+import { useOcorrencias } from '../state/ocorrencias';
+import Badge from './Badge.vue';
+
+const { ocorrencias, fetchOcorrencias } = useOcorrencias();
+
+// Carrega os dados ao montar o componente
+onMounted(() => {
+  fetchOcorrencias();
+});
+
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString('pt-BR');
 };
 </script>
-
-<style scoped>
-.card {
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-.report-item {
-  display: flex;
-  align-items: center;
-  background: #f8f9fa;
-  padding: 10px;
-}
-.icon-container {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  color: white;
-}
-.high-urgency {
-  background: #dc3545;
-}
-.medium-urgency {
-  background: #ffc107;
-}
-.low-urgency {
-  background: #28a745;
-}
-</style>
