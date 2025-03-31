@@ -9,8 +9,15 @@
         <li>
           <router-link to="/atrasos">Menu Atrasos</router-link>
         </li>
+        <li>
+          <router-link to="/ocorrencias">Menu Ocorrencias</router-link>
+        </li>
       </ul>
     </nav>
+    <!-- LIMPAR LOCAL STORAGE PROVISÓRIO SOU PREGUIÇOSO -->
+    <button class="clear-storage-btn" @click="limparLocalStorage">
+      Limpar Local Storage
+    </button>
   </aside>
 </template>
 
@@ -23,6 +30,14 @@ export default {
         { caminho: '/', nome: 'Menu Geral', icone: 'bi-house' },
         { caminho: '/atrasos', nome: 'Menu Atrasos', icone: 'bi-clock-history' }
       ]
+    };
+  },
+
+  methods: {
+    limparLocalStorage() {
+      localStorage.clear(); // Limpa todo o conteúdo do localStorage
+      alert('Local Storage limpo com sucesso!');
+      location.reload(); // Recarrega a página para refletir as alterações
     }
   }
 }

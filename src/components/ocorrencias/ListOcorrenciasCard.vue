@@ -1,21 +1,26 @@
 <template>
-  <div class="lista-ocorrencias">
-    <div
-      v-for="ocorrencia in ocorrencias"
-      :key="ocorrencia.id"
-      class="ocorrencia-card"
-      :class="'status-' + ocorrencia.status"
-    >
-      <div class="cabecalho">
-        <span class="data">{{ formatarData(ocorrencia.data) }}</span>
+  <div class="lista-ocorrencias container">
+    <div v-for="ocorrencia in ocorrencias" :key="ocorrencia.id" class="ocorrencia-card row"
+      :class="'status-' + ocorrencia.status"@click="$emit('selecionarOcorrencia', ocorrencia)"
+      >
+      <div class="col-4">
+        <img v-if="ocorrencia.foto" :src="ocorrencia.foto" alt="Foto da ocorrência" class="foto-ocorrencia" />
       </div>
-      <p class="mensagem">{{ ocorrencia.mensagem }}</p>
-      <div class="rodape">
-        <span class="tipo">{{ formatarTipo(ocorrencia.tipo) }}</span>
-        <span class="status">{{ ocorrencia.status }}</span>
+      <div class="col-8">
+        <div class="cabecalho">
+          <span class="data">{{ formatarData(ocorrencia.data) }}</span>
+        </div>
+        <p class="mensagem">{{ ocorrencia.mensagem }}</p>
+        <div class="rodape">
+          <span class="tipo">{{ formatarTipo(ocorrencia.tipo) }}</span>
+          <span class="status">{{ ocorrencia.status }}</span>
+
+        </div>
       </div>
+      
     </div>
   </div>
+
 </template>
 
 <script>
@@ -92,7 +97,12 @@ export default defineComponent({
   padding: 8px;
 }
 
-
+.foto-ocorrencia {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+}
 
 
 .cabecalho {

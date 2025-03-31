@@ -5,17 +5,17 @@
       <div class="col-md-4">
         <div class="input-group">
           <select 
-            v-model="filtroTipo" 
+            v-model="filtroStatus" 
             class="form-select"
             @change="aplicarFiltros"
           >
             <option value="">Todos os tipos</option>
             <option 
-              v-for="tipo in tiposProblema" 
-              :key="tipo" 
-              :value="tipo"
+              v-for="status in statusProblema" 
+              :key="status" 
+              :value="status"
             >
-              {{ formatarTipo(tipo) }}
+              {{ formatarTipo(status) }}
             </option>
           </select>
         </div>
@@ -64,7 +64,7 @@ import { defineComponent, ref, computed } from 'vue';
 import Badge from '@/components/ui/Badge.vue';
 
 export default defineComponent({
-  name: 'TabelaOcorrencias',
+  name: 'ListaOcorrencias',
   components: { Badge },
   props: {
     ocorrencias: {
@@ -74,33 +74,23 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const filtroTipo = ref('');
-    
-    // Extrai todos os tipos únicos de problemas
-    const tiposProblema = computed(() => {
-      const tipos = new Set();
-      props.ocorrencias.forEach(oc => tipos.add(oc.tipo));
-      return Array.from(tipos);
+    const filtroStatus = ref('');
+
+    const statusProblema = computed(() => {
+      const status = new Set();
+      props.ocorrencias.forEach(oc => status.add(oc.status));
+      return Array.from(status);
     });
 
-    // Aplica os filtros
     const ocorrenciasFiltradas = computed(() => {
-      if (!filtroTipo.value) return props.ocorrencias;
-      
-      return props.ocorrencias.filter(
-        oc => oc.tipo === filtroTipo.value
-      );
+      if (!filtroStatus.value) return props.ocorrencias;
+      return props.ocorrencias.filter(oc => oc.status === filtroStatus.value);
     });
-
-    const limparFiltros = () => {
-      filtroTipo.value = '';
-    };
 
     return {
-      filtroTipo,
-      tiposProblema,
-      ocorrenciasFiltradas,
-      limparFiltros
+      filtroStatus,
+      statusProblema,
+      ocorrenciasFiltradas
     };
   },
   methods: {
@@ -112,8 +102,8 @@ export default defineComponent({
         return data;
       }
     },
-    formatarTipo(tipo) {
-      return tipo ? tipo.charAt(0).toUpperCase() + tipo.slice(1) : '';
+    formatarTipo(status) {
+      return status ? status.charAt(0).toUpperCase() + status.slice(1) : '';
     }
   }
 });
