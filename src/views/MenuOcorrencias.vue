@@ -6,39 +6,28 @@
       
       <div class="linha-ocorrencias">
         <Cartao class="cartao-ocorrencia">
-          <OcorrenciasCard 
+          <!-- Substituído ListOcorrenciasCard por ListaOcorrencias -->
+          <ListaOcorrencias 
             :ocorrencias="ocorrenciasAtivas"
-            @selecionarOcorrencia="selecionarOcorrencia"
             v-if="ocorrenciasAtivas.length"
+            @selecionarOcorrencia="selecionarOcorrencia"
           />
 
           <div v-else class="sem-ocorrencias">
-            Nenhum atraso reportado
+            Nenhuma ocorrência encontrada
           </div>
         </Cartao>
       </div>
-
-      <!-- Modal Component -->
-      <ModalOcorrencias
-        v-if="ocorrenciaSelecionada"
-        :ocorrenciaSelecionada="ocorrenciaSelecionada"
-        v-model:apoioExterno="apoioExterno"
-        v-model:responsavelSelecionado="responsavelSelecionado"
-        :trabalhadores="trabalhadores"
-        @fecharModal="fecharModal"
-        @atribuirResponsavel="atribuirResponsavelHandler"
-        @concluirOcorrencia="concluirOcorrenciaHandler"
-      />
     </main>
   </div>
 </template>
 
 <script>
 import { defineComponent, computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Sidebar from '@/components/layout/Sidebar.vue';
 import Cartao from '@/components/ui/Cartao.vue';
-import OcorrenciasCard from '@/components/ocorrencias/ListOcorrenciasCard.vue';
-import ModalOcorrencias from '@/components/ocorrencias/ModalOcorrencias.vue';
+import ListaOcorrencias from '@/components/ocorrencias/ListaOcorrencias.vue';
 import { useOcorrencias } from '@/state/ocorrencias';
 
 export default defineComponent({
@@ -46,49 +35,24 @@ export default defineComponent({
   components: {
     Sidebar,
     Cartao,
-    OcorrenciasCard,
-    ModalOcorrencias
+    ListaOcorrencias
   },
   setup() {
-    const { estado, obterTrabalhadores, atribuirResponsavel, atualizarStatus } = useOcorrencias();
+    const { estado } = useOcorrencias();
+    const router = useRouter();
 
-    const ocorrenciasAtivas = computed(() => estado.ocorrencias.filter(o => o.status !== 'Concluída'));
-    const ocorrenciaSelecionada = ref(null);
-    const apoioExterno = ref(false);
-    const responsavelSelecionado = ref('');
-    const trabalhadores = computed(() => obterTrabalhadores());
+    // Filtra ocorrências que não estão concluídas
+    const ocorrenciasAtivas = computed(() => 
+      estado.ocorrencias.filter(o => o.status !== 'Concluída')
+    );
 
     const selecionarOcorrencia = (ocorrencia) => {
-      ocorrenciaSelecionada.value = ocorrencia;
-    };
-
-    const fecharModal = () => {
-      ocorrenciaSelecionada.value = null;
-    };
-
-    const atribuirResponsavelHandler = ({ id, responsavel }) => {
-      const responsavelFinal = apoioExterno.value ? "trabalhadorExterno" : responsavel;
-      atribuirResponsavel(id, responsavelFinal);
-      alert(`Responsável "${responsavelFinal}" atribuído à ocorrência.`);
-      fecharModal();
-    };
-
-    const concluirOcorrenciaHandler = (id) => {
-      atualizarStatus(id, 'Concluída');
-      alert("Ocorrência concluída com sucesso.");
-      fecharModal();
+      router.push({ name: 'EditarOcorrencia', params: { id: ocorrencia.id } });
     };
 
     return {
-      trabalhadores,
       ocorrenciasAtivas,
-      ocorrenciaSelecionada,
-      selecionarOcorrencia,
-      fecharModal,
-      apoioExterno,
-      responsavelSelecionado,
-      atribuirResponsavelHandler,
-      concluirOcorrenciaHandler
+      selecionarOcorrencia
     };
   }
 });
@@ -106,20 +70,10 @@ export default defineComponent({
   background-color: #f8f9fa;
 }
 
-.linha-estatisticas {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
 .linha-ocorrencias {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
-}
-
-.status-card {
-  flex: 1;
 }
 
 .cartao-ocorrencia {
@@ -131,5 +85,4 @@ export default defineComponent({
   text-align: center;
   color: #6c757d;
 }
-
 </style>

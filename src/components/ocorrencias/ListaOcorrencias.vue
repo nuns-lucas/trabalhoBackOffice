@@ -1,29 +1,54 @@
 <template>
   <div>
-    <!-- Filtro por tipo -->
+    <!-- Filtros -->
     <div class="row mb-3">
+      <!-- Filtro por Status -->
       <div class="col-md-4">
         <div class="input-group">
+          <label class="input-group-text" for="filtroStatus">Status:</label>
           <select 
+            id="filtroStatus"
             v-model="filtroStatus" 
             class="form-select"
             @change="aplicarFiltros"
           >
-            <option value="">Todos os tipos</option>
+            <option value="">Todos os status</option>
             <option 
               v-for="status in statusProblema" 
               :key="status" 
               :value="status"
             >
-              {{ formatarTipo(status) }}
+              {{ formatarStatus(status) }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Filtro por Tipo -->
+      <div class="col-md-4 ms-auto">
+        <div class="input-group">
+          <label class="input-group-text" for="filtroTipo">Tipo:</label>
+          <select 
+            id="filtroTipo"
+            v-model="filtroTipo" 
+            class="form-select"
+            @change="aplicarFiltros"
+          >
+            <option value="">Todos os tipos</option>
+            <option 
+              v-for="tipo in tiposProblema" 
+              :key="tipo" 
+              :value="tipo"
+            >
+              {{ formatarTipo(tipo) }}
             </option>
           </select>
         </div>
       </div>
     </div>
 
-    <!-- Tabela -->
-    <div class="table-responsive">
+    <!-- Tabela com scroll -->
+    <div class="table-responsive tabela-scroll">
       <table class="table table-hover align-middle">
         <thead>
           <tr>
@@ -35,7 +60,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="ocorrencia in ocorrenciasFiltradas" :key="ocorrencia.id">
+          <tr 
+            v-for="ocorrencia in ocorrenciasFiltradas" 
+            :key="ocorrencia.id"
+            @click="$emit('selecionarOcorrencia', ocorrencia)" 
+            class="tabela-linha"
+          >
             <td>
               <Badge :status="ocorrencia.status" />
             </td>
@@ -73,8 +103,9 @@ export default defineComponent({
       default: () => []
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const filtroStatus = ref('');
+    const filtroTipo = ref('');
 
     const statusProblema = computed(() => {
       const status = new Set();
@@ -82,15 +113,31 @@ export default defineComponent({
       return Array.from(status);
     });
 
-    const ocorrenciasFiltradas = computed(() => {
-      if (!filtroStatus.value) return props.ocorrencias;
-      return props.ocorrencias.filter(oc => oc.status === filtroStatus.value);
+    const tiposProblema = computed(() => {
+      const tipos = new Set();
+      props.ocorrencias.forEach(oc => tipos.add(oc.tipo));
+      return Array.from(tipos);
     });
+
+    const ocorrenciasFiltradas = computed(() => {
+      return props.ocorrencias.filter(oc => {
+        const statusMatch = !filtroStatus.value || oc.status === filtroStatus.value;
+        const tipoMatch = !filtroTipo.value || oc.tipo === filtroTipo.value;
+        return statusMatch && tipoMatch;
+      });
+    });
+
+    const selecionarOcorrencia = (ocorrencia) => {
+      emit('selecionarOcorrencia', ocorrencia); // Emite o evento para o componente pai
+    };
 
     return {
       filtroStatus,
+      filtroTipo,
       statusProblema,
-      ocorrenciasFiltradas
+      tiposProblema,
+      ocorrenciasFiltradas,
+      selecionarOcorrencia
     };
   },
   methods: {
@@ -102,7 +149,10 @@ export default defineComponent({
         return data;
       }
     },
-    formatarTipo(status) {
+    formatarTipo(tipo) {
+      return tipo ? tipo.charAt(0).toUpperCase() + tipo.slice(1) : '';
+    },
+    formatarStatus(status) {
       return status ? status.charAt(0).toUpperCase() + status.slice(1) : '';
     }
   }
@@ -116,5 +166,19 @@ export default defineComponent({
 .table th {
   font-weight: 600;
   font-size: 0.8rem;
+}
+
+/* Adiciona limite de altura e scroll */
+.tabela-scroll {
+  max-height: 200px; /* Ajusta o limite de altura com base no espaço restante */
+  overflow-y: auto;
+}
+
+.tabela-linha {
+  cursor: pointer; /* Adiciona um cursor de ponteiro para indicar que a linha é clicável */
+}
+
+.tabela-linha:hover {
+  background-color: #f1f3f5; /* Adiciona um efeito de hover */
 }
 </style>

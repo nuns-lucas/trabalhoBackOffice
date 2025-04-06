@@ -12,9 +12,17 @@
         <li>
           <router-link to="/ocorrencias">Menu Ocorrencias</router-link>
         </li>
+        <li>
+          <router-link to="/historico">Menu Historico</router-link>
+        </li>
+        <li>
+          <router-link to="/peritos">Menu Peritos</router-link>
+        </li>
       </ul>
     </nav>
-    <!-- LIMPAR LOCAL STORAGE PROVISÓRIO SOU PREGUIÇOSO -->
+    <button class="logout-btn" @click="logout">Logout</button>
+
+    <!-- LIMPAR LOCAL STORAGE PROVISÓRIO -->
     <button class="clear-storage-btn" @click="limparLocalStorage">
       Limpar Local Storage
     </button>
@@ -22,25 +30,32 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
+
 export default {
   name: 'Sidebar',
-  data() {
-    return {
-      rotas: [
-        { caminho: '/', nome: 'Menu Geral', icone: 'bi-house' },
-        { caminho: '/atrasos', nome: 'Menu Atrasos', icone: 'bi-clock-history' }
-      ]
-    };
-  },
+  setup() {
+    const router = useRouter();
 
-  methods: {
-    limparLocalStorage() {
+    // Função para limpar o localStorage
+    const limparLocalStorage = () => {
       localStorage.clear(); // Limpa todo o conteúdo do localStorage
       alert('Local Storage limpo com sucesso!');
       location.reload(); // Recarrega a página para refletir as alterações
-    }
+    };
+
+    // Função para logout
+    const logout = () => {
+      localStorage.removeItem('user'); // Remove o usuário do localStorage
+      router.push('/login'); // Redireciona para a página de login
+    };
+
+    return {
+      limparLocalStorage,
+      logout
+    };
   }
-}
+};
 </script>
 
 <style scoped>
@@ -88,5 +103,35 @@ nav a.router-link-exact-active {
 nav i {
   margin-right: 10px;
   font-size: 1.1rem;
+}
+
+.logout-btn {
+  background: #0f6324;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 12px;
+  margin-bottom: 20px;
+}
+
+.logout-btn:hover {
+  background: #27ae60;
+}
+
+.clear-storage-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.clear-storage-btn:hover {
+  background: #c82333;
 }
 </style>

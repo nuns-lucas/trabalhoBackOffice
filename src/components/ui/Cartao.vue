@@ -34,7 +34,7 @@ export default {
 }
 
 .cabecalho {
-  padding: 15px 20px;
+  padding: 15px 10px;
   border-bottom: 1px solid #eee;
 }
 
