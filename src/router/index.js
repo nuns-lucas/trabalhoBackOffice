@@ -9,8 +9,15 @@ import Login from '@/views/login.vue';
 import PerfilPerito from '@/views/PerfilPerito.vue';
 import HistoricoPerito from '@/views/HistoricoPerito.vue';
 import MenuPerito from '@/views/MenuPerito.vue';
+import InserirNovaOcorrencia from '@/views/inserirNovaOcorrencia.vue';
 
 const routes = [
+  {
+    path: '/inserirOcorrencia',
+    name: 'InserirNovaOcorrencia',
+    component: InserirNovaOcorrencia,
+    meta: { requiresAuth: true },
+  },
   {
     path: '/',
     name: 'MenuGeral',

@@ -103,6 +103,7 @@ export default defineComponent({
   padding: 8px;
   display: grid;
   gap: 16px;
+  
 }
 
 .ocorrencia-card {

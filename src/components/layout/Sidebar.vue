@@ -18,6 +18,9 @@
         <li>
           <router-link to="/peritos">Menu Peritos</router-link>
         </li>
+        <li>
+          <router-link to="/inserirOcorrencia">Inserir Nova Ocorrência</router-link>
+        </li>
       </ul>
     </nav>
     <button class="logout-btn" @click="logout">Logout</button>

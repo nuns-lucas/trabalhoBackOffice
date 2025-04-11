@@ -34,13 +34,16 @@
         </select>
       </div>
 
-      <ListaOcorrencias :ocorrencias="historicoFiltrado" />
+      <ListaOcorrencias 
+      :ocorrencias="historicoFiltrado"
+      @selecionarOcorrencia="selecionarOcorrencia" />
     </main>
   </div>
 </template>
 
 <script>
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import Sidebar from '@/components/layout/Sidebar.vue';
 import Cartao from '@/components/ui/Cartao.vue';
 import ListaOcorrencias from '@/components/ocorrencias/ListaOcorrencias.vue';
@@ -57,6 +60,8 @@ export default {
   },
   setup() {
     const { estado } = useOcorrencias();
+    const router = useRouter();
+
 
     // Filtros de mês e ano
     const mesSelecionado = ref(new Date().getMonth() + 1);
@@ -76,6 +81,10 @@ export default {
       { nome: 'Novembro', valor: 11 },
       { nome: 'Dezembro', valor: 12 }
     ];
+
+    const selecionarOcorrencia = (ocorrencia) => {
+      router.push({ name: 'EditarOcorrencia', params: { id: ocorrencia.id } });
+    };
 
     const anos = computed(() => {
       const anosDisponiveis = estado.ocorrencias.map(o => new Date(o.data).getFullYear());
@@ -135,6 +144,8 @@ export default {
       return contagem;
     });
 
+    
+
     return {
       meses,
       anos,
@@ -143,7 +154,8 @@ export default {
       historicoFiltrado,
       dadosPorTecnico,
       dadosPorDia,
-      dadosPorMaterial
+      dadosPorMaterial,
+      selecionarOcorrencia
     };
   }
 };
