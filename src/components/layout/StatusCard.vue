@@ -1,161 +1,95 @@
 <template>
-  <div class="status-card">
-    <div class="icone" :class="corClasse">
-      <i :class="iconeClasse"></i>
-    </div>
-    <div class="conteudo">
-      <h6>{{ titulo }}</h6>
-      <h3>{{ valorFormatado }}</h3>
-      <small v-if="detalhes" class="detalhes">{{ detalhes }}</small>
-    </div>
+  <div class="status-card" :class="statusClass">
+    <h3 class="title">{{ title }}</h3>
+    <p class="count">{{ count }}</p>
+    <p class="change" :class="arrowClass">
+      <span>{{ arrow }}</span> {{ formattedDifference }}
+    </p>
   </div>
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useOcorrencias } from '@/state/ocorrencias';
-
 export default {
   name: 'StatusCard',
   props: {
-    titulo: {
-      type: String,
-      required: true
-    },
-    tipo: {
-      type: String,
-      validator: value => ['operacionais', 'atrasados', 'avariados'].includes(value)
-    },
-    cor: {
-      type: String,
-      default: 'verde',
-      validator: value => ['verde', 'laranja', 'vermelho', 'azul'].includes(value)
-    },
-    icone: {
-      type: String,
-      default: 'bi-info-circle'
-    },
-    mostrarDetalhes: {
-      type: Boolean,
-      default: false
-    }
+    title: String,
+    count: Number,
+    currentWeek: Number, // Quantidade da semana atual
+    previousWeek: Number, // Quantidade da semana passada
+    statusClass: String
   },
-  setup(props) {
-    const { estado } = useOcorrencias();
-
-    const valorFormatado = computed(() => {
-      if (props.tipo) {
-        return estado.statusAutocarros[props.tipo] || 0;
-      }
-      return props.valor;
-    });
-
-    const detalhes = computed(() => {
-      if (props.tipo === 'atrasados' && props.mostrarDetalhes) {
-        const count = estado.ocorrencias.filter(
-          o => o.tipo === 'atraso' && o.status !== 'resolvido'
-        ).length;
-        return `${count} ocorrências em aberto`;
-      }
-      return null;
-    });
-
-    const corClasse = computed(() => {
-      return {
-        verde: 'bg-verde',
-        laranja: 'bg-laranja',
-        vermelho: 'bg-vermelho',
-        azul: 'bg-azul'
-      }[props.cor];
-    });
-
-    const iconeClasse = computed(() => {
-      return `bi ${props.icone}`;
-    });
-
-    return {
-      valorFormatado,
-      detalhes,
-      corClasse,
-      iconeClasse
-    };
+  computed: {
+    // Calcula a diferença percentual entre semanas
+    difference() {
+      if (this.previousWeek === 0) return 100; // Evita divisão por zero
+      return (((this.currentWeek - this.previousWeek) / this.previousWeek) * 100).toFixed(1);
+    },
+    // Formata a diferença com o símbolo de porcentagem
+    formattedDifference() {
+      return `${this.difference}% vs semana passada`;
+    },
+    // Define a seta com base na diferença
+    arrow() {
+      return this.difference < 0 ? '↓' : '↑';
+    },
+    // Define a classe da seta com base na diferença
+    arrowClass() {
+      return this.difference < 0 ? 'negative' : 'positive';
+    }
   }
 };
 </script>
 
 <style scoped>
 .status-card {
+  flex: 1;
+  margin: 10px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left; /* Alinha todo o conteúdo à esquerda */
   display: flex;
-  align-items: center;
-  background: white;
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  height: 100%;
+  flex-direction: column;
+  justify-content: space-between; /* Garante alinhamento consistente */
+  height: 150px; /* Define uma altura fixa para todos os cards */
+  
 }
 
-.status-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-}
-
-.icone {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+.status-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center; /* Centraliza o título */
+  flex-grow: 1; /* Garante que o título fique no topo */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 16px;
-  color: white;
-  font-size: 1.5rem;
+  white-space: nowrap; /* Impede quebras de linha */
 }
 
-.bg-verde { background: #28a745; }
-.bg-laranja { background: #fd7e14; }
-.bg-vermelho { background: #dc3545; }
-.bg-azul { background: #007bff; }
-
-.conteudo {
-  flex: 1;
+.status-card .count {
+  font-size: 2rem;
+  margin: 10px 0;
+  text-align: center; /* Centraliza o número */
+  flex-grow: 1; /* Garante que o número fique no centro vertical */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.conteudo h6 {
-  color: #6c757d;
-  margin: 0;
+/* Define cores para valores positivos e negativos */
+.status-card .positive {
+  color: #28a745; /* Verde para valores positivos */
+}
+
+.status-card .negative {
+  color: #dc3545; /* Vermelho para valores negativos */
+}
+
+.status-card .change {
   font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.conteudo h3 {
-  margin: 6px 0 0;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #343a40;
-}
-
-.detalhes {
-  display: block;
-  margin-top: 4px;
-  font-size: 0.75rem;
-  color: #6c757d;
-  font-style: italic;
-}
-
-@media (max-width: 768px) {
-  .status-card {
-    padding: 14px;
-  }
-
-  .icone {
-    width: 48px;
-    height: 48px;
-    font-size: 1.2rem;
-  }
-
-  .conteudo h3 {
-    font-size: 1.5rem;
-  }
+  text-align: center; /* Centraliza o texto de diferença */
+  max-width: 100%; /* Limita a largura do texto */
+  white-space: nowrap; /* Impede quebras de linha */
 }
 </style>

@@ -25,10 +25,10 @@
             <td>{{ perito.nome }}</td>
             <td>{{ perito.contacto }}</td>
             <td>
-              <Badge :status="perito.status" />
+              <span :class="getStatusClass(perito.status)">{{ perito.status }}</span>
             </td>
             <td>
-              <button @click="verPerfil(perito.id)" class="btn btn-primary">
+              <button @click="verPerfilPerito(perito.id)" class="btn btn-primary">
                 Ver Perfil
               </button>
             </td>
@@ -43,37 +43,62 @@
 </template>
 
 <script>
-import Sidebar from '@/components/layout/Sidebar.vue';
-import Badge from '@/components/ui/Badge.vue'; 
-import { useOcorrencias } from '@/state/ocorrencias';
-import { ref, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { usePeritos } from '@/state/peritos';
+import Sidebar from '@/components/layout/Sidebar.vue';
 
-export default {
+export default defineComponent({
   name: 'MenuPerito',
-  components: { Sidebar, Badge }, 
+  components: { 
+    Sidebar 
+  },
   setup() {
-    const { estado } = useOcorrencias();
-    const filtroStatus = ref('');
+    const { estado } = usePeritos();
     const router = useRouter();
 
+    // Filtro de status
+    const filtroStatus = ref('');
+
+    // Lista de peritos
+    const peritos = computed(() => estado.peritos);
+    
+    // Lista de peritos filtrados
     const peritosFiltrados = computed(() => {
-      if (!filtroStatus.value) return estado.peritos;
-      return estado.peritos.filter((perito) => perito.status === filtroStatus.value);
+      if (!filtroStatus.value) {
+        return peritos.value;
+      }
+      return peritos.value.filter(p => p.status === filtroStatus.value);
     });
 
-    const verPerfil = (id) => {
+    // Navegar para perfil do perito
+    const verPerfilPerito = (id) => {
       router.push({ name: 'PerfilPerito', params: { id } });
     };
-
+    
+    // Registrar novo perito
     const registrarPerito = () => {
-      alert('Funcionalidade de registro ainda não implementada.');
+      // Implementar navegação para página de registro de peritos
+      alert('Funcionalidade de registrar novo perito ainda não implementada');
+    };
+    
+    // Obter classe de estilo baseada no status
+    const getStatusClass = (status) => {
+      return status === 'Disponível' ? 'status-disponivel' : 'status-indisponivel';
     };
 
-    return { filtroStatus, peritosFiltrados, verPerfil, registrarPerito };
+    return {
+      peritos,
+      peritosFiltrados,
+      filtroStatus,
+      verPerfilPerito,
+      registrarPerito,
+      getStatusClass
+    };
   }
-};
+});
 </script>
+
 <style scoped>
 .menu-perito {
   display: flex;
@@ -170,5 +195,24 @@ export default {
 
 .btn-success:hover {
   background-color: #218838;
+}
+
+/* Estilos para os status */
+.status-disponivel {
+  background-color: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.status-indisponivel {
+  background-color: #dc3545;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
 }
 </style>

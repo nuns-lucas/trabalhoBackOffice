@@ -7,9 +7,6 @@
           <router-link to="/">Menu Geral</router-link>
         </li>
         <li>
-          <router-link to="/atrasos">Menu Atrasos</router-link>
-        </li>
-        <li>
           <router-link to="/ocorrencias">Menu Ocorrencias</router-link>
         </li>
         <li>
@@ -20,6 +17,9 @@
         </li>
         <li>
           <router-link to="/inserirOcorrencia">Inserir Nova Ocorrência</router-link>
+        </li>
+        <li>
+          <router-link to="/materiais">Gestão de Materiais</router-link>
         </li>
       </ul>
     </nav>

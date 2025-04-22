@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { auth, onAuthStateChanged } from '@/firebase';
 import MenuGeral from '@/views/MenuGeral.vue';
-import MenuAtrasos from '@/views/MenuAtrasos.vue';
 import MenuOcorrencias from '@/views/MenuOcorrencias.vue';
 import EditarOcorrencia from '@/views/EditarOcorrencia.vue';
 import HistoricoOcorrencias from '@/views/MenuHistorico.vue';
@@ -10,6 +9,10 @@ import PerfilPerito from '@/views/PerfilPerito.vue';
 import HistoricoPerito from '@/views/HistoricoPerito.vue';
 import MenuPerito from '@/views/MenuPerito.vue';
 import InserirNovaOcorrencia from '@/views/inserirNovaOcorrencia.vue';
+import AuditoriaForm from '@/views/AuditoriaForm.vue';
+import RejeitarOcorrencia from '@/views/RejeitarOcorrencia.vue';
+import CriarAuditoria from '@/views/CriarAuditoria.vue';
+import GestaoMateriais from '@/views/GestaoMateriais.vue';
 
 const routes = [
   {
@@ -22,12 +25,6 @@ const routes = [
     path: '/',
     name: 'MenuGeral',
     component: MenuGeral,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/atrasos',
-    name: 'MenuAtrasos',
-    component: MenuAtrasos,
     meta: { requiresAuth: true }
   },
   {
@@ -73,7 +70,29 @@ const routes = [
     component: HistoricoPerito,
     props: true,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/ocorrencia/:id',
+    name: 'AuditoriaForm',
+    component: AuditoriaForm
+  },
+  {
+    path: '/ocorrencia/:id/rejeitar',
+    name: 'RejeitarOcorrencia',
+    component: RejeitarOcorrencia
+  },
+  {
+    path: '/ocorrencia/:id/criar-auditoria',
+    name: 'CriarAuditoria',
+    component: CriarAuditoria
+  },
+  {
+    path: '/materiais',
+    name: 'GestaoMateriais',
+    component: GestaoMateriais,
+    meta: { requiresAuth: true }
   }
+  
 ];
 
 const router = createRouter({

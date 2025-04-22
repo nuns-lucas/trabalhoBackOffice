@@ -1,52 +1,63 @@
 <template>
-  <span :class="['badge', statusClass]">
-    {{ statusText }}
-  </span>
+  <span class="badge" :class="badgeClass">{{ statusFormatado }}</span>
 </template>
 
 <script>
 export default {
-  name: 'Badge',
   props: {
     status: {
       type: String,
-      required: true,
-      validator: (value) =>
-        ['Pendente', 'Encaminhado', 'Concluída', 'Disponível', 'Não disponível'].includes(value)
+      required: true
     }
   },
   computed: {
-    statusText() {
-      const map = {
-        Pendente: 'Pendente',
-        Encaminhado: 'Encaminhado',
-        Concluída: 'Concluída',
-        Disponível: 'Disponível',
-        'Não disponível': 'Não disponível'
-      };
-      return map[this.status] || this.status;
+    badgeClass() {
+      switch(this.status) {
+        case 'Aberta':
+          return 'badge-success'; // Verde
+        case 'Auditoria aberta':
+          return 'badge-warning'; // Amarelo
+        case 'Rejeitada':
+          return 'badge-danger'; // Vermelho
+        default:
+          return 'badge-secondary';
+      }
     },
-    statusClass() {
-      const map = {
-        Pendente: 'bg-danger text-dark',
-        Encaminhado: 'bg-warning text-dark',
-        Concluída: 'bg-success text-dark',
-        Disponível: 'bg-success text-light', // Verde para "Disponível"
-        'Não disponível': 'bg-danger text-light' // Vermelho para "Não disponível"
-      };
-      return map[this.status] || 'bg-light text-dark';
+    statusFormatado() {
+      return this.status;
     }
   }
-};
+}
 </script>
 
 <style scoped>
 .badge {
   display: inline-block;
-  padding: 0.25em 0.5em;
-  font-size: 0.875rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
   font-weight: 600;
   text-align: center;
-  border-radius: 0.25rem;
+  white-space: nowrap;
+}
+
+.badge-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge-secondary {
+  background-color: #6c757d;
+  color: white;
 }
 </style>

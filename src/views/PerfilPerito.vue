@@ -5,12 +5,24 @@
       <div class="banner">
         <img src="@/assets/banner-default.jpg" alt="Banner" />
       </div>
-      <div class="detalhes">
+      <div class="detalhes" v-if="perito">
         <h2>{{ perito.nome }}</h2>
         <p><strong>Contacto:</strong> {{ perito.contacto }}</p>
+        <p><strong>Status:</strong> <span :class="getStatusClass(perito.status)">{{ perito.status }}</span></p>
         <p><strong>Ocorrências Concluídas:</strong> {{ perito.ocorrenciasConcluidas }}</p>
-        <button @click="verHistorico" class="btn btn-primary">
-          Ver Histórico de Ocorrências
+        <div class="acoes">
+          <button @click="verHistorico" class="btn btn-primary">
+            Ver Histórico de Ocorrências
+          </button>
+          <button @click="voltarParaLista" class="btn btn-secondary">
+            Voltar para Lista
+          </button>
+        </div>
+      </div>
+      <div class="erro" v-else>
+        <p>Perito não encontrado</p>
+        <button @click="voltarParaLista" class="btn btn-secondary">
+          Voltar para Lista
         </button>
       </div>
     </main>
@@ -19,30 +31,70 @@
 
 <script>
 import Sidebar from '@/components/layout/Sidebar.vue';
-import { useOcorrencias } from '@/state/ocorrencias';
+import { usePeritos } from '@/state/peritos'; // Correto: importar usePeritos
+import { useOcorrencias } from '@/state/ocorrencias'; // Manter para recuperar ocorrências
 import { computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 export default {
   name: 'PerfilPerito',
   components: { Sidebar },
-  setup() {
-    const { estado } = useOcorrencias();
+  props: {
+    id: {
+      type: String,
+      required: false
+    }
+  },
+  setup(props) {
+    const { estado } = usePeritos(); // Usar estado dos peritos
+    const { obterOcorrenciasPorPerito } = useOcorrencias(); // Usar função para obter ocorrências
     const route = useRoute();
     const router = useRouter();
 
-    const perito = computed(() =>
-      estado.peritos.find((p) => p.id === Number(route.params.id))
+    // ID do perito (de props ou route params)
+    const peritoId = computed(() => 
+      Number(props.id || route.params.id)
     );
 
+    // Buscar o perito pelo ID
+    const perito = computed(() => 
+      estado.peritos.find(p => p.id === peritoId.value)
+    );
+
+    // Contagem de ocorrências do perito
+    const ocorrenciasDoPeritoCount = computed(() => 
+      obterOcorrenciasPorPerito(peritoId.value).length
+    );
+
+    // Navegar para a página de histórico
     const verHistorico = () => {
-      router.push({ name: 'HistoricoPerito', params: { id: perito.value.id } });
+      router.push({ 
+        name: 'HistoricoPerito', 
+        params: { id: peritoId.value }
+      });
     };
 
-    return { perito, verHistorico };
+    // Voltar para a lista de peritos
+    const voltarParaLista = () => {
+      router.push({ name: 'MenuPerito' });
+    };
+
+    // Obter classe de estilo baseada no status
+    const getStatusClass = (status) => {
+      return status === 'Disponível' ? 'status-disponivel' : 'status-indisponivel';
+    };
+
+    return { 
+      perito, 
+      ocorrenciasDoPeritoCount,
+      verHistorico, 
+      voltarParaLista,
+      getStatusClass
+    };
   }
 };
 </script>
+
 <style scoped>
 .perfil-perito {
   display: flex;
@@ -84,13 +136,19 @@ export default {
   font-size: 1.8rem;
   font-weight: bold;
   color: #2c3e50;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .detalhes p {
   font-size: 1rem;
   color: #495057;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.acoes {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
 }
 
 .btn {
@@ -98,13 +156,58 @@ export default {
   border-radius: 4px;
   font-size: 1rem;
   font-weight: bold;
-  background-color: #007bff;
-  color: white;
   border: none;
   transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
-.btn:hover {
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
   background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.erro {
+  text-align: center;
+  padding: 30px;
+  background-color: #f8d7da;
+  border-radius: 8px;
+}
+
+.erro p {
+  font-size: 1.2rem;
+  color: #721c24;
+  margin-bottom: 20px;
+}
+
+/* Estilos para os status */
+.status-disponivel {
+  background-color: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.status-indisponivel {
+  background-color: #dc3545;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
 }
 </style>

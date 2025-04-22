@@ -63,7 +63,7 @@
           <tr 
             v-for="ocorrencia in ocorrenciasFiltradas" 
             :key="ocorrencia.id"
-            @click="$emit('selecionarOcorrencia', ocorrencia)" 
+            @click="selecionarOcorrencia(ocorrencia)" 
             class="tabela-linha"
           >
             <td>
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, watch } from 'vue';
 import Badge from '@/components/ui/Badge.vue';
 
 export default defineComponent({
@@ -127,6 +127,11 @@ export default defineComponent({
       });
     });
 
+    // Observa mudanças nas ocorrências filtradas e emite o evento
+    watch(ocorrenciasFiltradas, (novasOcorrencias) => {
+      emit('ocorrencias-filtradas', novasOcorrencias);
+    });
+
     const selecionarOcorrencia = (ocorrencia) => {
       emit('selecionarOcorrencia', ocorrencia); // Emite o evento para o componente pai
     };
@@ -154,6 +159,9 @@ export default defineComponent({
     },
     formatarStatus(status) {
       return status ? status.charAt(0).toUpperCase() + status.slice(1) : '';
+    },
+    aplicarFiltros() {
+      // Método vazio para disparar a reatividade do filtro
     }
   }
 });

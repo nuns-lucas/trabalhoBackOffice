@@ -2,18 +2,18 @@
   <div class="menu-historico">
     <Sidebar />
     <main class="conteudo-principal">
-      <h2 class="titulo-secao">Histórico de Ocorrências</h2>
+      <h2 class="titulo-secao">Histórico de Auditorias</h2>
 
       <!-- Cards com Gráficos -->
       <div class="linha-graficos">
-        <Cartao titulo="Ocorrências por Técnico">
-          <GraficosHistorico tipo="bar" :dados="dadosPorTecnico" />
+        <Cartao titulo="Auditorias por Perito">
+          <GraficosHistorico tipo="bar" :dados="dadosPorPerito" />
         </Cartao>
-        <Cartao titulo="Ocorrências por Dia">
+        <Cartao titulo="Auditorias por Dia">
           <GraficosHistorico tipo="pie" :dados="dadosPorDia" />
         </Cartao>
-        <Cartao titulo="Materiais Utilizados">
-          <GraficosHistorico tipo="bar" :dados="dadosPorMaterial" />
+        <Cartao titulo="Auditorias por Tipo">
+          <GraficosHistorico tipo="bar" :dados="dadosPorTipo" />
         </Cartao>
       </div>
 
@@ -34,9 +34,10 @@
         </select>
       </div>
 
+      <!-- Usar o componente ListaOcorrencias com mapeamento -->
       <ListaOcorrencias 
-      :ocorrencias="historicoFiltrado"
-      @selecionarOcorrencia="selecionarOcorrencia" />
+        :ocorrencias="auditoriasMapeadas" 
+        @selecionarOcorrencia="tratarSelecaoAuditoria" />
     </main>
   </div>
 </template>
@@ -48,7 +49,8 @@ import Sidebar from '@/components/layout/Sidebar.vue';
 import Cartao from '@/components/ui/Cartao.vue';
 import ListaOcorrencias from '@/components/ocorrencias/ListaOcorrencias.vue';
 import GraficosHistorico from '@/components/ui/GraficosHistorico.vue';
-import { useOcorrencias } from '@/state/ocorrencias';
+import { useAuditorias } from '@/state/auditorias';
+import { usePeritos } from '@/state/peritos';
 
 export default {
   name: 'MenuHistorico',
@@ -59,9 +61,9 @@ export default {
     GraficosHistorico
   },
   setup() {
-    const { estado } = useOcorrencias();
+    const { estado } = useAuditorias();
+    const { estado: estadoPeritos } = usePeritos();
     const router = useRouter();
-
 
     // Filtros de mês e ano
     const mesSelecionado = ref(new Date().getMonth() + 1);
@@ -82,69 +84,91 @@ export default {
       { nome: 'Dezembro', valor: 12 }
     ];
 
-    const selecionarOcorrencia = (ocorrencia) => {
-      router.push({ name: 'EditarOcorrencia', params: { id: ocorrencia.id } });
+    const selecionarAuditoria = (auditoria) => {
+      router.push({ name: 'EditarAuditoria', params: { id: auditoria.id } });
+    };
+    
+    // Função para lidar com a seleção do componente ListaOcorrencias
+    const tratarSelecaoAuditoria = (ocorrencia) => {
+      // Encontrar a auditoria original pelo ID mapeado
+      const auditoria = estado.auditorias.find(a => a.id === ocorrencia.id);
+      if (auditoria) {
+        selecionarAuditoria(auditoria);
+      }
     };
 
     const anos = computed(() => {
-      const anosDisponiveis = estado.ocorrencias.map(o => new Date(o.data).getFullYear());
+      const anosDisponiveis = estado.auditorias.map(a => new Date(a.data).getFullYear());
       return [...new Set(anosDisponiveis)];
     });
 
     // Histórico filtrado por mês e ano
     const historicoFiltrado = computed(() => {
-      return estado.ocorrencias.filter(o => {
-        const data = new Date(o.data);
+      return estado.auditorias.filter(a => {
+        const data = new Date(a.data);
         return (
           data.getMonth() + 1 === mesSelecionado.value &&
           data.getFullYear() === anoSelecionado.value
         );
       });
     });
+    
+    // Mapear auditorias para o formato esperado pelo componente ListaOcorrencias
+    const auditoriasMapeadas = computed(() => {
+      return historicoFiltrado.value.map(auditoria => ({
+        id: auditoria.id,
+        titulo: auditoria.titulo,
+        tipo: auditoria.tipo,
+        data: auditoria.data,
+        status: auditoria.status,
+        descricao: auditoria.descricao,
+        // Outros campos que o ListaOcorrencias possa esperar
+        responsavelId: auditoria.peritoId,
+        mensagem: auditoria.mensagem
+      }));
+    });
 
     // Dados para os gráficos baseados no histórico filtrado
-    const dadosPorTecnico = computed(() => {
+    const dadosPorPerito = computed(() => {
       const contagem = {};
-      historicoFiltrado.value.forEach(o => {
-        if (o.responsavelId) {
-          contagem[o.responsavelId] = (contagem[o.responsavelId] || 0) + 1;
+      historicoFiltrado.value.forEach(a => {
+        if (a.peritoId) {
+          contagem[a.peritoId] = (contagem[a.peritoId] || 0) + 1;
         }
       });
 
-      // Mapeia os IDs para os nomes dos técnicos
+      // Mapeia os IDs para os nomes dos peritos
       const dadosComNomes = {};
-      estado.peritos.forEach(perito => {
-        if (contagem[perito.id]) {
-          dadosComNomes[perito.nome] = contagem[perito.id];
-        }
-      });
+      if (estadoPeritos && estadoPeritos.peritos) {
+        estadoPeritos.peritos.forEach(perito => {
+          if (contagem[perito.id]) {
+            dadosComNomes[perito.nome] = contagem[perito.id];
+          }
+        });
+      }
 
       return dadosComNomes;
     });
 
     const dadosPorDia = computed(() => {
       const contagem = {};
-      historicoFiltrado.value.forEach(o => {
-        const dia = new Date(o.data).getDate();
+      historicoFiltrado.value.forEach(a => {
+        const dia = new Date(a.data).getDate();
         contagem[dia] = (contagem[dia] || 0) + 1;
       });
       return contagem;
     });
 
-    const dadosPorMaterial = computed(() => {
-      // Exemplo fictício: Substitua com dados reais de materiais
+    const dadosPorTipo = computed(() => {
       const contagem = {};
-      historicoFiltrado.value.forEach(o => {
-        if (o.materiais) {
-          o.materiais.forEach(material => {
-            contagem[material] = (contagem[material] || 0) + 1;
-          });
+      historicoFiltrado.value.forEach(a => {
+        if (a.tipo) {
+          const tipoCapitalizado = a.tipo.charAt(0).toUpperCase() + a.tipo.slice(1);
+          contagem[tipoCapitalizado] = (contagem[tipoCapitalizado] || 0) + 1;
         }
       });
       return contagem;
     });
-
-    
 
     return {
       meses,
@@ -152,10 +176,11 @@ export default {
       mesSelecionado,
       anoSelecionado,
       historicoFiltrado,
-      dadosPorTecnico,
+      auditoriasMapeadas,
+      dadosPorPerito,
       dadosPorDia,
-      dadosPorMaterial,
-      selecionarOcorrencia
+      dadosPorTipo,
+      tratarSelecaoAuditoria
     };
   }
 };
