@@ -460,7 +460,7 @@ export const useOcorrencias = () => {
 
     return id;
   };
-  
+
   // Obter ocorrências por perito
   const obterOcorrenciasPorPerito = (peritoId) => {
     return estado.ocorrencias.filter(o => o.responsavelId === peritoId);
@@ -489,6 +489,19 @@ export const useOcorrencias = () => {
     return '';
   };
 
+  // Atualizar campos de uma ocorrência
+  const atualizarOcorrencia = (id, dadosAtualizados) => {
+    const ocorrencia = estado.ocorrencias.find((o) => o.id === id);
+    if (ocorrencia) {
+      // Mesclar os dados atualizados com a ocorrência existente
+      Object.assign(ocorrencia, dadosAtualizados);
+      salvarEstado();
+      return true;
+    }
+    return false;
+  };
+
+  // E também adicionar atualizarOcorrencia ao objeto retornado
   return {
     estado: readonly(estado),
     adicionarOcorrencia,
@@ -498,6 +511,7 @@ export const useOcorrencias = () => {
     calcularMudanca,
     calcularClasse,
     criarAuditoria,
-    obterOcorrenciasPorPerito
+    obterOcorrenciasPorPerito,
+    atualizarOcorrencia  // Adicionar esta linha
   };
 };

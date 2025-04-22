@@ -11,12 +11,8 @@
         <div class="duas-colunas">
           <!-- Coluna Esquerda - Foto -->
           <div class="coluna-foto">
-            <img 
-              v-if="ocorrencia.foto" 
-              :src="ocorrencia.foto" 
-              :alt="`Foto da ocorrência ${ocorrencia.id}`"
-              class="foto-ocorrencia" 
-            />
+            <img v-if="ocorrencia.foto" :src="ocorrencia.foto" :alt="`Foto da ocorrência ${ocorrencia.id}`"
+              class="foto-ocorrencia" />
             <div v-else class="foto-placeholder">
               <span>Sem foto disponível</span>
             </div>
@@ -31,21 +27,16 @@
               <p class="resumo-item"><strong>Mensagem:</strong> {{ ocorrencia.mensagem }}</p>
             </div>
           </div>
-          
+
           <!-- Coluna Direita - Formulário de Auditoria -->
           <div class="coluna-form">
             <h3>Criar Nova Auditoria</h3>
-            
+
             <form @submit.prevent="criarNovaAuditoria" class="formulario-auditoria">
               <div class="form-group">
                 <label for="titulo">Nome da Auditoria*</label>
-                <input
-                  type="text"
-                  id="titulo"
-                  v-model="novaAuditoria.titulo"
-                  required
-                  placeholder="Ex: Auditoria de Atraso na Linha 47"
-                />
+                <input type="text" id="titulo" v-model="novaAuditoria.titulo" required
+                  placeholder="Ex: Auditoria de Atraso na Linha 47" />
               </div>
 
               <div class="form-row">
@@ -62,10 +53,11 @@
                   <label for="tipo">Tipo*</label>
                   <select id="tipo" v-model="novaAuditoria.tipo" required>
                     <option value="" disabled>Selecione o tipo</option>
-                    <option value="Paragem">Paragem</option>
-                    <option value="Tráfego">Tráfego</option>
-                    <option value="Veículo">Veículo</option>
-                    <option value="Segurança">Segurança</option>
+                    <option value="atraso">Atraso</option>
+                    <option value="avaria">Avaria</option>
+                    <option value="incidente">Incidente</option>
+                    <option value="segurança">Segurança</option>
+                    <option value="avalia">Avaliação</option>
                   </select>
                 </div>
               </div>
@@ -75,37 +67,21 @@
                 <div class="peritos-selector">
                   <select id="peritos" v-model="peritoSelecionado">
                     <option value="" disabled>Selecione os peritos</option>
-                    <option 
-                      v-for="perito in peritosDisponiveis" 
-                      :key="perito.id" 
-                      :value="perito.id"
-                    >
+                    <option v-for="perito in peritosDisponiveis" :key="perito.id" :value="perito.id">
                       {{ perito.nome }}
                     </option>
                   </select>
-                  <button 
-                    type="button" 
-                    class="btn-add" 
-                    @click="adicionarPerito"
-                    :disabled="!peritoSelecionado"
-                  >
+                  <button type="button" class="btn-add" @click="adicionarPerito" :disabled="!peritoSelecionado">
                     Adicionar
                   </button>
                 </div>
-                
+
                 <!-- Lista de peritos selecionados -->
                 <div class="peritos-selecionados" v-if="novaAuditoria.peritos.length > 0">
-                  <div 
-                    v-for="(peritoId, index) in novaAuditoria.peritos" 
-                    :key="`selected-${peritoId}`"
-                    class="perito-item"
-                  >
+                  <div v-for="(peritoId, index) in novaAuditoria.peritos" :key="`selected-${peritoId}`"
+                    class="perito-item">
                     {{ getNomePerito(peritoId) }}
-                    <button 
-                      type="button" 
-                      class="btn-remove" 
-                      @click="removerPerito(index)"
-                    >
+                    <button type="button" class="btn-remove" @click="removerPerito(index)">
                       ×
                     </button>
                   </div>
@@ -113,25 +89,47 @@
                 <p class="error" v-if="peritoError">{{ peritoError }}</p>
               </div>
 
+              <!-- Seção de Materiais -->
+              <div class="form-group">
+                <label>Materiais Necessários</label>
+                <div class="materiais-selector">
+                  <select v-model="materialSelecionado">
+                    <option value="" disabled>Selecione um material</option>
+                    <option v-for="material in materiaisDisponiveis" :key="material.id" :value="material.id">
+                      {{ material.nome }} (Disponível: {{ material.quantidade }} {{ material.unidade }})
+                    </option>
+                  </select>
+                  <input type="number" v-model.number="quantidadeMaterial" min="1" 
+                    :max="getMaterialDisponivel(materialSelecionado)" class="input-quantidade" />
+                  <button type="button" class="btn-add" @click="adicionarMaterial" :disabled="!materialSelecionado">
+                    Adicionar
+                  </button>
+                </div>
+
+                <!-- Lista de materiais selecionados -->
+                <div class="materiais-selecionados" v-if="novaAuditoria.materiais.length > 0">
+                  <h4>Materiais Selecionados:</h4>
+                  <div v-for="(material, index) in novaAuditoria.materiais" :key="`material-${material.materialId}`"
+                    class="material-item">
+                    {{ getNomeMaterial(material.materialId) }} - {{ material.quantidade }} {{ getUnidadeMaterial(material.materialId) }}
+                    <button type="button" class="btn-remove" @click="removerMaterial(index)">
+                      ×
+                    </button>
+                  </div>
+                </div>
+                <p class="error" v-if="materialError">{{ materialError }}</p>
+              </div>
+
               <div class="form-group">
                 <label for="dataFinalizacao">Data Prevista de Finalização*</label>
-                <input 
-                  type="date" 
-                  id="dataFinalizacao" 
-                  v-model="novaAuditoria.dataFinalizacao" 
-                  :min="dataMinima"
-                  required
-                />
+                <input type="date" id="dataFinalizacao" v-model="novaAuditoria.dataFinalizacao" :min="dataMinima"
+                  required />
               </div>
 
               <div class="form-group">
                 <label for="descricao">Detalhes Adicionais</label>
-                <textarea 
-                  id="descricao" 
-                  v-model="novaAuditoria.descricao" 
-                  placeholder="Detalhe os objetivos e escopo da auditoria"
-                  rows="4"
-                ></textarea>
+                <textarea id="descricao" v-model="novaAuditoria.descricao"
+                  placeholder="Detalhe os objetivos e escopo da auditoria" rows="4"></textarea>
               </div>
 
               <div class="form-actions">
@@ -155,6 +153,7 @@
 import { ref, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useOcorrencias } from '@/state/ocorrencias';
+import { useAuditorias } from '@/state/auditorias';
 import { usePeritos } from '@/state/peritos';
 import { useMateriais } from '@/state/materiais';
 import Sidebar from '@/components/layout/Sidebar.vue';
@@ -167,142 +166,170 @@ export default {
   setup() {
     const router = useRouter();
     const route = useRoute();
-    const { estado: estadoOcorrencias, criarAuditoria } = useOcorrencias();
+    const { estado: estadoOcorrencias, atualizarOcorrencia } = useOcorrencias();
+    const { criarAuditoria } = useAuditorias();
     const { estado: estadoPeritos } = usePeritos();
-    const { estado: estadoMateriais, adicionarMateriaisAuditoria } = useMateriais();
-    
+    const { estado: estadoMateriais, adicionarMateriaisAuditoria, atualizarEstoqueMaterial } = useMateriais();
+
     // Obter o ID da ocorrência a partir dos parâmetros da rota
     const ocorrenciaId = Number(route.params.id);
-    
+
     // Buscar a ocorrência pelo ID
-    const ocorrencia = computed(() => 
+    const ocorrencia = computed(() =>
       estadoOcorrencias.ocorrencias.find(o => o.id === ocorrenciaId)
     );
-    
+
     // Filtrar peritos disponíveis
     const peritosDisponiveis = computed(() =>
       estadoPeritos.peritos.filter(p => p.status === 'Disponível')
     );
-    
+
     // Data mínima: data atual
     const hoje = new Date();
     const dataMinima = hoje.toISOString().split('T')[0];
-    
+
     // Nova auditoria
     const novaAuditoria = ref({
       titulo: '',
       origem: '',
       tipo: '',
       peritos: [],
+      peritoId: null, // Campo adicionado para relacionamento com o perito principal
       dataFinalizacao: '',
       descricao: '',
       ocorrenciaId: ocorrenciaId,
       localizacao: ocorrencia.value?.paragem || '',
       data: new Date().toISOString(),
       ativa: true,
-      materiais: [] // Novo campo para materiais
+      status: "Em andamento",
+      materiais: [] // Array para armazenar os materiais
     });
-    
+
     // Perito selecionado temporariamente
     const peritoSelecionado = ref('');
     const peritoError = ref('');
-    
+
     // Estado para seleção de materiais
     const materialSelecionado = ref('');
     const quantidadeMaterial = ref(1);
     const materialError = ref('');
-    
+
     // Filtrar materiais disponíveis
     const materiaisDisponiveis = computed(() =>
       estadoMateriais.materiais.filter(m => !novaAuditoria.value.materiais.some(ma => ma.materialId === m.id))
     );
-    
+
     // Obter quantidade disponível de um material
     const getMaterialDisponivel = (materialId) => {
       if (!materialId) return 0;
       const material = estadoMateriais.materiais.find(m => m.id === materialId);
       return material ? material.quantidade : 0;
     };
-    
+
     // Obter nome de um material pelo ID
     const getNomeMaterial = (materialId) => {
       const material = estadoMateriais.materiais.find(m => m.id === materialId);
       return material ? material.nome : 'Material não encontrado';
     };
-    
+
     // Obter unidade de um material pelo ID
     const getUnidadeMaterial = (materialId) => {
       const material = estadoMateriais.materiais.find(m => m.id === materialId);
       return material ? material.unidade : '';
     };
-    
+
     // Adicionar material à auditoria
     const adicionarMaterial = () => {
-      if (!materialSelecionado.value || !quantidadeMaterial.value) return;
-      
+      if (!materialSelecionado.value || !quantidadeMaterial.value) {
+        materialError.value = 'Selecione um material e a quantidade';
+        return;
+      }
+
       const material = estadoMateriais.materiais.find(m => m.id === materialSelecionado.value);
-      
+
       if (!material) {
         materialError.value = 'Material não encontrado';
         return;
       }
-      
+
       if (quantidadeMaterial.value > material.quantidade) {
         materialError.value = 'Quantidade solicitada maior que a disponível';
         return;
       }
-      
+
       novaAuditoria.value.materiais.push({
         materialId: materialSelecionado.value,
         quantidade: quantidadeMaterial.value
       });
-      
+
       materialSelecionado.value = '';
       quantidadeMaterial.value = 1;
       materialError.value = '';
     };
-    
+
     // Remover material da auditoria
     const removerMaterial = (index) => {
       novaAuditoria.value.materiais.splice(index, 1);
     };
-    
+
     // Adicionar perito à lista
     const adicionarPerito = () => {
       if (!peritoSelecionado.value) return;
-      
+
       // Verificar se o perito já foi adicionado
       if (novaAuditoria.value.peritos.includes(peritoSelecionado.value)) {
         peritoError.value = 'Este perito já foi adicionado';
         return;
       }
-      
+
+      // Se for o primeiro perito adicionado, defina-o como peritoId principal
+      if (novaAuditoria.value.peritos.length === 0) {
+        novaAuditoria.value.peritoId = peritoSelecionado.value;
+      }
+
       novaAuditoria.value.peritos.push(peritoSelecionado.value);
       peritoSelecionado.value = '';
       peritoError.value = '';
     };
-    
+
     // Remover perito da lista
     const removerPerito = (index) => {
+      const peritoRemovido = novaAuditoria.value.peritos[index];
+      
+      // Se estiver removendo o perito principal, redefina o peritoId
+      if (peritoRemovido === novaAuditoria.value.peritoId) {
+        // Se ainda houver outros peritos, selecione o primeiro como principal
+        if (novaAuditoria.value.peritos.length > 1) {
+          // Encontre o próximo perito que não seja o que está sendo removido
+          const novoPeritoPrincipal = novaAuditoria.value.peritos.find(
+            (id, i) => i !== index
+          );
+          novaAuditoria.value.peritoId = novoPeritoPrincipal;
+        } else {
+          // Se não houver mais peritos, defina como null
+          novaAuditoria.value.peritoId = null;
+        }
+      }
+      
       novaAuditoria.value.peritos.splice(index, 1);
     };
-    
+
     // Obter nome do perito pelo ID
     const getNomePerito = (id) => {
       const perito = estadoPeritos.peritos.find(p => p.id === id);
       return perito ? perito.nome : 'Desconhecido';
     };
-    
+
     // Voltar para a página de detalhes
     const voltarParaDetalhes = () => {
       router.push({ name: 'AuditoriaForm', params: { id: ocorrenciaId } });
     };
-    
+
     // Voltar para o menu principal
     const voltarParaMenu = () => {
       router.push('/');
     };
-    
+
     // Formatar data
     const formatarData = (data) => {
       if (!data) return '--/--/----';
@@ -323,31 +350,67 @@ export default {
     const formatarTipo = (tipo) => {
       return tipo ? tipo.charAt(0).toUpperCase() + tipo.slice(1) : '';
     };
-    
+
     // Criar auditoria
     const criarNovaAuditoria = () => {
       if (novaAuditoria.value.peritos.length === 0) {
         peritoError.value = 'É necessário adicionar pelo menos um perito';
         return;
       }
-      
+
+      // Garantir que o peritoId está definido (usar o primeiro perito como principal)
+      if (!novaAuditoria.value.peritoId) {
+        novaAuditoria.value.peritoId = novaAuditoria.value.peritos[0];
+      }
+
       // Preencher os dados da ocorrência
       if (ocorrencia.value) {
         novaAuditoria.value.descricaoOcorrencia = ocorrencia.value.mensagem;
       }
-      
-      // Criar auditoria
-      const auditoriaId = criarAuditoria(novaAuditoria.value);
-      
-      // Adicionar materiais à auditoria
-      if (novaAuditoria.value.materiais.length > 0) {
-        adicionarMateriaisAuditoria(auditoriaId, novaAuditoria.value.materiais);
+
+      // Adicionar mensagem para visualização na interface
+      if (!novaAuditoria.value.mensagem) {
+        novaAuditoria.value.mensagem = novaAuditoria.value.descricao || novaAuditoria.value.titulo;
       }
-      
-      alert('Auditoria criada com sucesso!');
-      voltarParaMenu();
+
+      try {
+        // 1. Criar auditoria
+        const auditoriaId = criarAuditoria(novaAuditoria.value);
+        
+        // 2. Adicionar materiais à auditoria e atualizar estoque
+        if (novaAuditoria.value.materiais.length > 0) {
+          // Adicionar materiais à auditoria
+          if (adicionarMateriaisAuditoria) {
+            adicionarMateriaisAuditoria(auditoriaId, novaAuditoria.value.materiais);
+          }
+          
+          // Atualizar o estoque de cada material
+          novaAuditoria.value.materiais.forEach(material => {
+            if (atualizarEstoqueMaterial) {
+              atualizarEstoqueMaterial(material.materialId, -material.quantidade);
+            }
+          });
+        }
+        
+        // 3. Atualizar a ocorrência para status "Finalizada" em vez de removê-la
+        if (ocorrenciaId) {
+          atualizarOcorrencia(ocorrenciaId, {
+            status: 'Finalizada',
+            auditoria: {
+              id: auditoriaId,
+              data: new Date().toISOString()
+            }
+          });
+        }
+
+        alert('Auditoria criada com sucesso e ocorrência finalizada!');
+        voltarParaMenu();
+      } catch (error) {
+        console.error("Erro ao criar auditoria:", error);
+        alert('Erro ao criar auditoria. Verifique o console para mais detalhes.');
+      }
     };
-    
+
     return {
       ocorrencia,
       novaAuditoria,
@@ -419,7 +482,8 @@ export default {
   margin: 0;
 }
 
-.form-container, .erro-container {
+.form-container,
+.erro-container {
   background: white;
   border-radius: 8px;
   padding: 20px;
@@ -508,7 +572,9 @@ label {
   font-size: 0.9rem;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ced4da;
@@ -521,14 +587,21 @@ textarea {
   min-height: 100px;
 }
 
-.peritos-selector {
+.peritos-selector,
+.materiais-selector {
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
 }
 
-.peritos-selector select {
+.peritos-selector select,
+.materiais-selector select {
   flex: 1;
+}
+
+.input-quantidade {
+  width: 100px;
+  text-align: center;
 }
 
 .btn-add {
@@ -549,14 +622,23 @@ textarea {
   cursor: not-allowed;
 }
 
-.peritos-selecionados {
+.peritos-selecionados,
+.materiais-selecionados {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 10px;
 }
 
-.perito-item {
+.materiais-selecionados h4 {
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.perito-item,
+.material-item {
   display: flex;
   align-items: center;
   background-color: #e9ecef;

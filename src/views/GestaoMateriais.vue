@@ -242,18 +242,18 @@ export default {
 <style scoped>
 .gestao-materiais {
   display: flex;
-  height: 100vh; /* Limitar a altura total para a viewport */
-  overflow: hidden; /* Evitar scroll na página inteira */
+  min-height: 100vh; /* Alterado: usar min-height em vez de height */
+  overflow-y: auto; /* Alterado: permitir rolagem vertical */
 }
 
 .conteudo {
   flex: 1;
   padding: 20px;
   background-color: #f8f9fa;
-  overflow-y: auto; /* Adicionar scroll vertical se necessário */
-  height: 100%; /* Ocupar toda a altura disponível */
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  gap: 20px; /* Espaçamento consistente entre elementos */
 }
 
 .titulo {
@@ -267,18 +267,18 @@ export default {
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .material-form {
-  flex-shrink: 0; /* Evitar que o formulário encolha */
+  flex-shrink: 1; /* Alterado: permitir que o formulário encolha */
 }
 
 .materiais-lista {
-  flex: 1; /* Fazer com que a lista ocupe o espaço restante */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* Necessário para que o flex funcione corretamente com overflow */
+  min-height: 300px; /* Adicionado: altura mínima garantida */
 }
 
 .card h2 {
@@ -359,7 +359,7 @@ textarea {
 
 .filtro {
   margin-bottom: 15px;
-  flex-shrink: 0; /* Evitar que a área de filtro encolha */
+  flex-shrink: 0;
 }
 
 .filtro-input {
@@ -371,10 +371,12 @@ textarea {
 }
 
 .table-responsive {
-  overflow-y: auto; /* Adicionar scroll vertical */
-  overflow-x: auto; /* Manter scroll horizontal */
-  flex: 1; /* Ocupar o espaço restante */
-  max-height: calc(100% - 80px); /* Limitar altura, considerando o título e filtro */
+  overflow-y: auto;
+  overflow-x: auto;
+  flex: 1;
+  min-height: 200px; /* Alterado: definir altura mínima em vez de máxima */
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
 }
 
 .tabela-materiais {
@@ -455,5 +457,69 @@ textarea {
   font-style: italic;
   color: #6c757d;
   padding: 20px !important;
+}
+
+/* Media queries para telas menores */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .titulo {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+
+  .card h2 {
+    font-size: 1.3rem;
+  }
+
+  .tabela-materiais th,
+  .tabela-materiais td {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .tabela-materiais .descricao {
+    max-width: 150px;
+  }
+
+  .btn-acao {
+    padding: 4px 8px;
+    display: block;
+    margin-bottom: 5px;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .table-responsive {
+    margin-top: 10px;
+  }
+}
+
+/* Para telas muito pequenas (smartphones) */
+@media (max-width: 480px) {
+  .conteudo {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  .tabela-materiais th:nth-child(2), /* Esconder a coluna de descrição */
+  .tabela-materiais td:nth-child(2) {
+    display: none;
+  }
+  
+  .tabela-materiais th:nth-child(4), /* Esconder a coluna de quantidade mínima */
+  .tabela-materiais td:nth-child(4) {
+    display: none;
+  }
 }
 </style>

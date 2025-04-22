@@ -21,14 +21,19 @@
         <li>
           <router-link to="/materiais">Gestão de Materiais</router-link>
         </li>
+        <!-- Separador visual -->
+        <li class="separator"></li>
+        <!-- Botões de ação agora dentro da lista de navegação -->
+        <li>
+          <button class="nav-button logout-btn" @click="logout">Logout</button>
+        </li>
+        <li>
+          <button class="nav-button clear-storage-btn" @click="limparLocalStorage">
+            Limpar Local Storage
+          </button>
+        </li>
       </ul>
     </nav>
-    <button class="logout-btn" @click="logout">Logout</button>
-
-    <!-- LIMPAR LOCAL STORAGE PROVISÓRIO -->
-    <button class="clear-storage-btn" @click="limparLocalStorage">
-      Limpar Local Storage
-    </button>
   </aside>
 </template>
 
@@ -66,23 +71,46 @@ export default {
   width: 250px;
   background: #2d502c;
   color: white;
-  height: 100vh;
+  position: sticky;
+  top: 0;
+  height: auto;
+  min-height: 100vh;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 100;
+  align-self: stretch;
 }
 
 .logo {
   color: #fff;
   margin-bottom: 30px;
   font-size: 1.5rem;
+  text-align: center;
+}
+
+nav {
+  flex: 1;
+  overflow-y: auto;
 }
 
 nav ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 nav li {
   margin-bottom: 15px;
+}
+
+/* Estilo para o separador visual entre links e botões */
+.separator {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+  margin: 15px 0;
 }
 
 nav a {
@@ -108,16 +136,22 @@ nav i {
   font-size: 1.1rem;
 }
 
-.logout-btn {
-  background: #0f6324;
+/* Estilo comum para botões na navegação */
+.nav-button {
+  width: 100%;
+  text-align: left;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
-  margin-left: 12px;
-  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+/* Estilos específicos para cada tipo de botão */
+.logout-btn {
+  background: #0f6324;
 }
 
 .logout-btn:hover {
@@ -126,15 +160,67 @@ nav i {
 
 .clear-storage-btn {
   background: #dc3545;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
 }
 
 .clear-storage-btn:hover {
   background: #c82333;
+}
+
+/* Media queries para telas menores */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+    padding: 15px;
+  }
+  
+  .logo {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  
+  nav a, .nav-button {
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 60px;
+    padding: 10px 5px;
+    overflow-x: hidden;
+    height: auto; 
+    min-height: 100vh;
+  }
+  
+  .logo {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+  
+  nav a, .nav-button {
+    justify-content: center;
+    padding: 10px 5px;
+    text-align: center;
+  }
+  
+  /* Em telas muito pequenas, escondemos o texto e mostramos apenas ícones */
+  .nav-button {
+    font-size: 0;
+  }
+  
+  nav a span {
+    display: none;
+  }
+  
+  /* Adicionar ícones usando pseudo-elementos para botões em telas pequenas */
+  .logout-btn::after {
+    content: "↩️";
+    font-size: 0.9rem;
+  }
+  
+  .clear-storage-btn::after {
+    content: "🗑️";
+    font-size: 0.9rem;
+  }
 }
 </style>
