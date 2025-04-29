@@ -64,7 +64,12 @@
 
               <div class="form-group">
                 <label for="peritos">Peritos Responsáveis*</label>
-                <div class="peritos-selector">
+                <!-- Mensagem de alerta quando não há peritos disponíveis -->
+                <div v-if="semPeritosDisponiveis" class="info-alerta">
+                  <p>Não há peritos disponíveis no momento. Todos os peritos estão ocupados com outras auditorias ou indisponíveis.</p>
+                </div>
+                <!-- Seletor de peritos apenas se houver peritos disponíveis -->
+                <div v-else class="peritos-selector">
                   <select id="peritos" v-model="peritoSelecionado">
                     <option value="" disabled>Selecione os peritos</option>
                     <option v-for="perito in peritosDisponiveis" :key="perito.id" :value="perito.id">
@@ -133,7 +138,9 @@
               </div>
 
               <div class="form-actions">
-                <button type="submit" class="btn-primary">Criar Auditoria</button>
+                <button type="submit" class="btn-primary" :disabled="semPeritosDisponiveis || novaAuditoria.peritos.length === 0">
+                  Criar Auditoria
+                </button>
                 <button type="button" class="btn-secondary" @click="voltarParaDetalhes">Cancelar</button>
               </div>
             </form>
@@ -167,7 +174,7 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const { estado: estadoOcorrencias, atualizarOcorrencia } = useOcorrencias();
-    const { criarAuditoria } = useAuditorias();
+    const { criarAuditoria, estado: estadoAuditorias } = useAuditorias(); // Adicionado o acesso ao estado das auditorias
     const { estado: estadoPeritos } = usePeritos();
     const { estado: estadoMateriais, adicionarMateriaisAuditoria, atualizarEstoqueMaterial } = useMateriais();
 
@@ -179,9 +186,44 @@ export default {
       estadoOcorrencias.ocorrencias.find(o => o.id === ocorrenciaId)
     );
 
-    // Filtrar peritos disponíveis
+    // Verificar quais peritos já estão associados a auditorias ativas
+    const peritosComAuditoriaAtiva = computed(() => {
+      // Criar uma lista de IDs dos peritos que já têm auditoria ativa
+      const peritosIndisponiveisIds = [];
+      
+      // Verifica todas as auditorias
+      estadoAuditorias.auditorias.forEach(auditoria => {
+        // Se a auditoria estiver ativa ou em andamento
+        if (auditoria.ativa || auditoria.status === 'Em andamento') {
+          // Adiciona o perito principal
+          if (auditoria.peritoId) {
+            peritosIndisponiveisIds.push(auditoria.peritoId);
+          }
+          // Adiciona todos os peritos associados
+          if (auditoria.peritos && Array.isArray(auditoria.peritos)) {
+            auditoria.peritos.forEach(peritoId => {
+              if (!peritosIndisponiveisIds.includes(peritoId)) {
+                peritosIndisponiveisIds.push(peritoId);
+              }
+            });
+          }
+        }
+      });
+      
+      return peritosIndisponiveisIds;
+    });
+
+    // Filtrar peritos disponíveis - agora excluindo aqueles com auditorias ativas
     const peritosDisponiveis = computed(() =>
-      estadoPeritos.peritos.filter(p => p.status === 'Disponível')
+      estadoPeritos.peritos.filter(p => 
+        p.status === 'Disponível' && 
+        !peritosComAuditoriaAtiva.value.includes(p.id)
+      )
+    );
+
+    // Verificar se há peritos disponíveis
+    const semPeritosDisponiveis = computed(() => 
+      peritosDisponiveis.value.length === 0
     );
 
     // Data mínima: data atual
@@ -238,6 +280,11 @@ export default {
       return material ? material.unidade : '';
     };
 
+    // Verifica se um perito está atribuído a alguma auditoria ativa
+    const peritoEstaAtivo = (peritoId) => {
+      return peritosComAuditoriaAtiva.value.includes(peritoId);
+    };
+
     // Adicionar material à auditoria
     const adicionarMaterial = () => {
       if (!materialSelecionado.value || !quantidadeMaterial.value) {
@@ -279,6 +326,12 @@ export default {
       // Verificar se o perito já foi adicionado
       if (novaAuditoria.value.peritos.includes(peritoSelecionado.value)) {
         peritoError.value = 'Este perito já foi adicionado';
+        return;
+      }
+
+      // Verificar se o perito está ativo em outra auditoria
+      if (peritoEstaAtivo(peritoSelecionado.value)) {
+        peritoError.value = 'Este perito já está associado a outra auditoria ativa';
         return;
       }
 
@@ -434,7 +487,9 @@ export default {
       voltarParaMenu,
       formatarData,
       formatarTipo,
-      criarNovaAuditoria
+      criarNovaAuditoria,
+      semPeritosDisponiveis, // Adicionado para verificar se há peritos disponíveis
+      peritoEstaAtivo // Adicionado para verificar o status de um perito específico
     };
   }
 };
@@ -689,6 +744,11 @@ textarea {
   background-color: #1a5002;
 }
 
+.btn-primary:disabled {
+  background-color: #94b682;
+  cursor: not-allowed;
+}
+
 .btn-secondary {
   padding: 10px 20px;
   background-color: #6c757d;
@@ -701,5 +761,20 @@ textarea {
 
 .btn-secondary:hover {
   background-color: #5a6268;
+}
+
+/* Estilo para a mensagem de alerta de peritos */
+.info-alerta {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  border-left: 4px solid #ffc107;
+}
+
+.info-alerta p {
+  margin: 0;
+  font-size: 0.95rem;
 }
 </style>

@@ -10,7 +10,7 @@
           <GraficosHistorico tipo="bar" :dados="dadosPorPerito" />
         </Cartao>
         <Cartao titulo="Auditorias por Dia">
-          <GraficosHistorico tipo="pie" :dados="dadosPorDia" />
+          <GraficosHistorico tipo="bar" :dados="dadosPorDia" />
         </Cartao>
         <Cartao titulo="Auditorias por Tipo">
           <GraficosHistorico tipo="bar" :dados="dadosPorTipo" />
@@ -35,9 +35,7 @@
       </div>
 
       <!-- Usar o componente ListaOcorrencias com mapeamento -->
-      <ListaOcorrencias 
-        :ocorrencias="auditoriasMapeadas" 
-        @selecionarOcorrencia="tratarSelecaoAuditoria" />
+      <ListaOcorrencias :ocorrencias="auditoriasMapeadas" @selecionarOcorrencia="tratarSelecaoAuditoria" />
     </main>
   </div>
 </template>
@@ -87,7 +85,7 @@ export default {
     const selecionarAuditoria = (auditoria) => {
       router.push({ name: 'EditarAuditoria', params: { id: auditoria.id } });
     };
-    
+
     // Função para lidar com a seleção do componente ListaOcorrencias
     const tratarSelecaoAuditoria = (ocorrencia) => {
       // Encontrar a auditoria original pelo ID mapeado
@@ -112,7 +110,7 @@ export default {
         );
       });
     });
-    
+
     // Mapear auditorias para o formato esperado pelo componente ListaOcorrencias
     const auditoriasMapeadas = computed(() => {
       return historicoFiltrado.value.map(auditoria => ({

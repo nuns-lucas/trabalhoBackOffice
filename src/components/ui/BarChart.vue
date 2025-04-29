@@ -35,6 +35,7 @@ export default {
       const colors = [
         '#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1', '#fd7e14', '#20c997', '#6610f2'
       ];
+      
       // Repete as cores se o número de barras for maior que o número de cores disponíveis
       return Array.from({ length }, (_, i) => colors[i % colors.length]);
     };
@@ -55,6 +56,9 @@ export default {
       if (labels.every((label) => meses.includes(label))) {
         labels = labels.sort((a, b) => meses.indexOf(a) - meses.indexOf(b));
       }
+      
+      // Se temos menos de 3 categorias, mostramos barras mais largas
+      const barPercentage = labels.length <= 3 ? 0.5 : 0.8;
 
       chartInstance = new Chart(canvas.value, {
         type: 'bar',
@@ -71,12 +75,24 @@ export default {
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          barPercentage: barPercentage,
           scales: {
             y: {
               beginAtZero: true,
               ticks: {
                 stepSize: 1, // Incrementa em números inteiros
                 callback: (value) => Math.round(value) // Garante que os valores sejam inteiros
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // Esconde a legenda, já que os labels estão no eixo x
+            },
+            tooltip: {
+              callbacks: {
+                title: (items) => items[0].label,
+                label: (context) => `Quantidade: ${context.parsed.y}`
               }
             }
           }

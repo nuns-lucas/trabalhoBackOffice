@@ -35,15 +35,66 @@
           </tr>
         </tbody>
       </table>
-      <button @click="registrarPerito" class="btn btn-success">
+      <button @click="abrirOffCanvas" class="btn btn-success">
         Registrar Novo Perito
       </button>
     </main>
+
+    <!-- Off-Canvas para Adicionar Peritos -->
+    <div class="off-canvas" :class="{ 'show': mostrarOffCanvas }">
+      <div class="off-canvas-conteudo">
+        <div class="off-canvas-header">
+          <h3>Registrar Novo Perito</h3>
+          <button class="btn-fechar" @click="fecharOffCanvas">&times;</button>
+        </div>
+        <div class="off-canvas-body">
+          <form @submit.prevent="salvarPerito">
+            <div class="form-group">
+              <label for="nome">Nome*</label>
+              <input 
+                type="text" 
+                id="nome" 
+                v-model="novoPerito.nome" 
+                required 
+                placeholder="Nome completo"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="contacto">Contacto*</label>
+              <input 
+                type="text" 
+                id="contacto" 
+                v-model="novoPerito.contacto" 
+                required 
+                placeholder="Ex: email@email.com"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label for="status">Status*</label>
+              <select id="status-perito" v-model="novoPerito.status" required>
+                <option value="Disponível">Disponível</option>
+                <option value="Não disponível">Não disponível</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success">Salvar</button>
+              <button type="button" class="btn btn-secondary" @click="fecharOffCanvas">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Overlay separado com v-if para aparecer apenas quando necessário -->
+    <div v-if="mostrarOffCanvas" class="off-canvas-overlay" @click="fecharOffCanvas"></div>
   </div>
 </template>
 
 <script>
-import { defineComponent, computed, ref } from 'vue';
+import { defineComponent, computed, ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { usePeritos } from '@/state/peritos';
 import Sidebar from '@/components/layout/Sidebar.vue';
@@ -54,8 +105,19 @@ export default defineComponent({
     Sidebar 
   },
   setup() {
-    const { estado } = usePeritos();
+    const { estado, adicionarPerito } = usePeritos();
     const router = useRouter();
+
+    // Estado para o off-canvas
+    const mostrarOffCanvas = ref(false);
+    
+    // Estado para o novo perito
+    const novoPerito = reactive({
+      nome: '',
+      contacto: '',
+      status: 'Disponível',
+      ocorrenciasConcluidas: 0
+    });
 
     // Filtro de status
     const filtroStatus = ref('');
@@ -76,10 +138,46 @@ export default defineComponent({
       router.push({ name: 'PerfilPerito', params: { id } });
     };
     
-    // Registrar novo perito
-    const registrarPerito = () => {
-      // Implementar navegação para página de registro de peritos
-      alert('Funcionalidade de registrar novo perito ainda não implementada');
+    // Abrir off-canvas
+    const abrirOffCanvas = () => {
+      mostrarOffCanvas.value = true;
+      // Prevenir scroll na página quando o off-canvas estiver aberto
+      document.body.style.overflow = 'hidden';
+    };
+    
+    // Fechar off-canvas
+    const fecharOffCanvas = () => {
+      mostrarOffCanvas.value = false;
+      // Permitir scroll novamente
+      document.body.style.overflow = 'auto';
+      // Resetar formulário
+      Object.assign(novoPerito, {
+        nome: '',
+        contacto: '',
+        status: 'Disponível',
+        ocorrenciasConcluidas: 0
+      });
+    };
+    
+    // Salvar novo perito
+    const salvarPerito = () => {
+      // Gerar ID baseado em timestamp
+      const id = Date.now().toString();
+      
+      // Criar o objeto perito
+      const perito = {
+        id,
+        nome: novoPerito.nome,
+        contacto: novoPerito.contacto,
+        status: novoPerito.status,
+        ocorrenciasConcluidas: novoPerito.ocorrenciasConcluidas
+      };
+      
+      // Adicionar o perito ao estado usando a função do usePeritos
+      adicionarPerito(perito);
+      
+      // Fechar o off-canvas e resetar o formulário
+      fecharOffCanvas();
     };
     
     // Obter classe de estilo baseada no status
@@ -92,8 +190,13 @@ export default defineComponent({
       peritosFiltrados,
       filtroStatus,
       verPerfilPerito,
-      registrarPerito,
-      getStatusClass
+      getStatusClass,
+      // Novo estado e métodos para o off-canvas
+      mostrarOffCanvas,
+      abrirOffCanvas,
+      fecharOffCanvas,
+      novoPerito,
+      salvarPerito
     };
   }
 });
@@ -103,15 +206,15 @@ export default defineComponent({
 .menu-perito {
   display: flex;
   min-height: 100vh;
-  background-color: #f4f6f9; /* Fundo mais claro para um visual mais moderno */
+  background-color: #f4f6f9;
 }
 
 .conteudo-principal {
   flex: 1;
   padding: 30px;
-  background-color: #ffffff; /* Fundo branco para contraste */
+  background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra para destacar o conteúdo */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin: 20px;
 }
 
@@ -119,8 +222,8 @@ export default defineComponent({
   margin-bottom: 20px;
   font-size: 1.8rem;
   font-weight: bold;
-  color: #2c3e50; /* Cor mais escura para o título */
-  border-bottom: 2px solid #e0e0e0; /* Linha sutil abaixo do título */
+  color: #2c3e50;
+  border-bottom: 2px solid #e0e0e0;
   padding-bottom: 10px;
 }
 
@@ -175,6 +278,7 @@ export default defineComponent({
   font-size: 0.9rem;
   font-weight: bold;
   transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
 .btn-primary {
@@ -197,6 +301,16 @@ export default defineComponent({
   background-color: #218838;
 }
 
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
 /* Estilos para os status */
 .status-disponivel {
   background-color: #28a745;
@@ -214,5 +328,112 @@ export default defineComponent({
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: bold;
+}
+
+/* Estilos para o off-canvas */
+.off-canvas {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100vh;
+  z-index: 1050;
+  transition: right 0.3s ease-in-out;
+}
+
+.off-canvas.show {
+  right: 0;
+}
+
+.off-canvas-conteudo {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 1051;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.off-canvas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.off-canvas-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+.btn-fechar {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+}
+
+.off-canvas-body {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.off-canvas-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1049;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+  .off-canvas {
+    width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .off-canvas {
+    width: 100%;
+  }
 }
 </style>
