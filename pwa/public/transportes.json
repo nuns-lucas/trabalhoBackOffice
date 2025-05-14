@@ -1,0 +1,30 @@
+[
+  {
+    "numero": 21,
+    "nome": "Guimarães-Vizela",
+    "origem": { "lat": 41.4446, "lng": -8.2969 },
+    "paragens": [
+      { "lat": 41.4200, "lng": -8.2700 },
+      { "lat": 41.3900, "lng": -8.2400 }
+    ],
+    "destino": { "lat": 41.3675, "lng": -8.2017 }
+  },
+  {
+    "numero": 81,
+    "nome": "Gondar-Moreira de Cónegos",
+    "origem": { "lat": 41.4475, "lng": -8.3144 },   
+    "destino": { "lat": 41.4621, "lng": -8.2903 }   
+  },
+  {
+    "numero": 172,
+    "nome": "Guimarães-Atães",
+    "origem": { "lat": 41.4446, "lng": -8.2969 },
+    "destino": { "lat": 41.3950, "lng": -8.3745 }
+  },
+  {
+    "numero": 188,
+    "nome": "Guimarães-S.Faustino",
+    "origem": { "lat": 41.4446, "lng": -8.2969 },
+    "destino": { "lat": 41.4060, "lng": -8.2655 }
+  }
+]

@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
+
+
+.resolver-ocorrencias-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  position: relative;
+}
+
+  
+  .ro-header {
+    padding: 20px;
+    font-size: 28px;
+    border-bottom: 1px solid #e5f2e3;
+    font-weight: bold;
+    text-align: center;
+    color: #143601;
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  .ro-header h1 {
+    margin: 0;
+    font-weight: bold;
+    color: #113c10;
+    font-size: 1.5rem;
+  }
+  
+  .ro-main-content {
+    flex: 1;
+    padding: 1rem;
+    text-align: center;
+    overflow-y: auto;  
+  }
+  
+  .ro-titulo {
+    text-align: center;
+    color: #113c10;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;     
+    font-size: 1.2rem;
+  }
+  
+  .ro-caixa {
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  textarea {
+    resize: none;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    min-height: 50px;
+  }
+  
+  select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+  }
+  
+  .ro-upload {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+  
+  .ro-upload img {
+    width: 50px;
+    cursor: pointer;
+  }
+  
+  .ro-preview {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .ro-preview img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 1rem;
+    object-fit: contain;
+  }
+  
+  .ro-submeter {
+    margin-top: 1.5rem;
+    background-color: #ffffff;
+    color: #113c10;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 1.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .ro-voltar {
+    background-color: white;
+    padding: 0.6rem;
+    text-align: center;
+  }
+  
+  .ro-voltar button {
+    background-color: #ffffff;
+    color: #113c10;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 2rem;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  }

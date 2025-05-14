@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
+
+
+.auditorias-content {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.ar-header {
+  padding: 20px;
+    font-size: 28px;
+    border-bottom: 1px solid #e5f2e3;
+    font-weight: bold;
+    text-align: center;
+    color: #143601;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.ar-header h1 {
+  margin: 0;
+  font-weight: bold;
+  color: #113c10;
+  font-size: 1.5rem;
+}
+
+.ar-main-content {
+  flex: 1;
+  padding: 1rem;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.ar-titulo {
+  text-align: center;
+  color: #113c10;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;     
+  font-size: 1.2rem;
+}
+
+.ar-caixa {
+  background-color: white;
+  border-radius: 10px;
+  padding:0.1rem 1rem 0.5rem 1rem;
+  margin-bottom: 0.8rem;
+  position: relative;
+  text-align: left;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.ar-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ar-icon img {
+  width: 40px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.ar-menu-footer {
+  background-color: white;
+  padding: 0.6rem;
+  text-align: center;
+}
+
+.ar-menu-footer img {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.6;
+  margin:0 2.5rem;
+}
+
+.ar-menu-footer img:hover {
+  opacity: 1;
+  cursor: pointer;
+}

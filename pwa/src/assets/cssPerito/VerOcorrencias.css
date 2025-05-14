@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
+
+.ver-ocorrencias-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+  
+  .vo-header {
+    padding: 20px;
+    font-size: 28px;
+    border-bottom: 1px solid #e5f2e3;
+    font-weight: bold;
+    text-align: center;
+    color: #143601;
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  .vo-header h1 {
+    margin: 0;
+    font-weight: bold;
+    color: #113c10;
+    font-size: 1.5rem;
+  }
+  
+  .vo-main-content {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  
+  .vo-titulo {
+    text-align: center;
+    color: #113c10;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;     
+    font-size: 1.2rem;
+  }
+  
+  .vo-caixa {
+    background-color: white;
+    border-radius: 10px;
+    padding:0.1rem 1rem 0.5rem 1rem;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .vo-botoes {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 0.8rem;
+  }
+  
+  .vo-botoes img {
+    width: 32px;
+    height: 32px;
+    background-color: #e8f0e7;
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+  }
+  
+  .vo-menu-footer {
+    background-color: white;
+    padding: 0.6rem;
+    text-align: center;
+  }
+  
+  .vo-menu-footer img {
+    width: 1.5rem;
+    height: 1.5rem;
+    opacity: 0.6;
+    margin:0 2.5rem;
+  }
+  
+  .vo-menu-footer img:hover {
+    opacity: 1;
+    cursor: pointer;
+  }

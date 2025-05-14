@@ -1,0 +1,114 @@
+.homeprincipal{
+    width: 375px;
+    text-align: center;
+    height: 812px;
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    border-radius: 20px;
+    border: 5px solid black;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+.submissoes-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #ffffff;
+    padding: 0;
+    position: relative;
+  }
+  
+  .header-bloco {
+    padding: 20px 20px 10px 20px;
+    flex-shrink: 0;
+    background-color: #ffffff;
+    box-sizing: border-box;
+  }
+  
+  h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+    color: black;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .pesquisa-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 8px 10px;
+    margin: 0 10px 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pesquisa-wrapper img {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+  }
+  
+  .search-bar {
+    flex: 1;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #000000;
+    font-size: 14px;
+  }
+  
+  .lista-submissoes {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px 20px 80px;
+  }
+  
+  .submissao-card {
+    background: white;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer; /* adiciona cursor pointer para indicar que é clicável */
+    transition: transform 0.2s;
+  }
+  .submissao-card:hover {
+    transform: scale(1.01); /* leve efeito de hover para parecer clicável */
+  }
+  
+  .botao-flutuante {
+    position: absolute;
+    right: 20px;
+    bottom: 40px;
+    z-index: 20;
+    background-color: #143601;
+    color: #ffffff;
+    font-size: 20pt;
+    font-weight: bolder;
+    border: none;
+    border-radius: 100px;
+    padding: 25px 22px;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+  }
+  
+  .lista-submissoes::-webkit-scrollbar {
+    width: 6px;
+  }
+  .lista-submissoes::-webkit-scrollbar-track {
+    background: #e5f2e3;
+    border-radius: 10px;
+  }
+  .lista-submissoes::-webkit-scrollbar-thumb {
+    background-color: #143601;
+    border-radius: 10px;
+  }
+  

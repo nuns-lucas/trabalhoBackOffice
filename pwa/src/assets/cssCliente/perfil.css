@@ -1,0 +1,51 @@
+.perfil-view {
+  background-color: #ffffff;
+  height: 697px;
+  padding-bottom: 80px; /* reserva espaço para BottomNav */
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.icon {
+  width: 60px;
+  height: 60px;
+}
+
+.perfil-info {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 0 20px 20px;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.1);
+}
+
+.terminar-sessao-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.terminar-sessao {
+  background-color: #c9302c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}

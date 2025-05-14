@@ -1,0 +1,85 @@
+/*Lp.css*/
+.login-content {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+}
+
+  .icon-lp{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .user-icon-lp {
+    width: 70px;
+    height: 70px;
+    stroke: #143601;
+  }
+
+  .title-lp{
+    font-size: 40px;
+    margin-top: 50px;
+    color: black;
+    font-weight: bold;
+  }
+
+  .meio-lp{
+    margin-top: 100px;
+  }
+
+  .inputs-lp{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .fundo-lp{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 160px;
+  }
+
+  .btn3-lp{
+    width: 200px;
+    padding: 15px 0px;
+    margin-left: auto;         
+    margin-right: auto;     
+    background-color: #143601;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .dados-lp{
+    
+    padding: 10px 40px;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    background-color: #f3f5f4;
+    text-align: center;
+    box-shadow: none;
+    outline: none;
+    color: #333;
+    font-family: 'Segoe UI', sans-serif;
+  }

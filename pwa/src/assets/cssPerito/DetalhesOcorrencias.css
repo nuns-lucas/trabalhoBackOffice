@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
+
+.detalhes-ocorrencia-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  position: relative; /* necessário para o botão voltar */
+}
+
+
+.do-header {
+  padding: 20px;
+    font-size: 28px;
+    border-bottom: 1px solid #e5f2e3;
+    font-weight: bold;
+    text-align: center;
+    color: #143601;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.do-header h1 {
+  margin: 0;
+  font-weight: bold;
+  color: #113c10;
+  font-size: 1.5rem;
+}
+
+.do-main-content {
+  flex: 1;
+  padding: 0.8rem;
+  text-align: center;
+  overflow-y: auto;
+}
+
+.do-titulo {
+  text-align: center;
+  color: #113c10;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;     
+  font-size: 1.2rem;
+}
+
+.do-caixa {
+  background-color: white;
+  border-radius: 10px;
+  padding: 0.1rem 1rem 0.1rem 1rem;
+  text-align: left;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.do-imagem-ocorrencia {
+  margin-top: 0.5rem;
+  width: 80%;
+  border-radius: 10px;
+}
+
+.do-voltar {
+  background-color: white;
+  padding: 0.6rem;
+  text-align: center;
+}
+
+.do-voltar button {
+  background-color: #ffffff;
+  color: #113c10;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}

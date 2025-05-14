@@ -1,0 +1,101 @@
+.transportes-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ffffff;
+  padding: 0;
+}
+
+/* Cabeçalho com o mesmo fundo */
+.header-bloco {
+  padding: 20px 20px 10px 20px;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+/* Título */
+h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Barra de pesquisa */
+.pesquisa-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 8px 10px;
+  margin: 0 10px 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pesquisa-wrapper img {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+.search-bar {
+  flex: 1;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #000000;
+  font-size: 14px;
+}
+
+
+/* Lista scrollável */
+.lista-transportes {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px 20px 80px;
+}
+
+/* Cartões */
+.transporte-card {
+  background: white;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.botoes {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.botao {
+  background-color: #d6e9cc;
+  padding: 6px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #143601;
+  font-weight: bold;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Scrollbar personalizada apenas para a lista de transportes */
+.lista-transportes::-webkit-scrollbar {
+  width: 6px;
+}
+
+.lista-transportes::-webkit-scrollbar-track {
+  background: #e5f2e3;
+  border-radius: 10px;
+}
+
+.lista-transportes::-webkit-scrollbar-thumb {
+  background-color: #143601;
+  border-radius: 10px;
+}
