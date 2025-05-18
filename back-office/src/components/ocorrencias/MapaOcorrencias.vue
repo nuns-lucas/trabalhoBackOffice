@@ -90,7 +90,7 @@ export default {
 
 <style scoped>
 .mapa {
-  height: 290px;
+  height: 500px;
   width: 100%;
   border-radius: 10px;
   margin-top: 20px;

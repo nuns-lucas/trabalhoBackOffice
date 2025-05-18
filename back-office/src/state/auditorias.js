@@ -6,61 +6,7 @@ const STORAGE_KEY = 'auditorias';
 // Estado inicial padrão
 const estadoPadrao = {
   auditorias: [
-    {
-      id: 1,
-      titulo: "Auditoria de Atrasos",
-      descricao: "Verificação de atrasos em linhas principais.",
-      data: "2023-11-20T10:00:00",
-      ativa: true,
-      peritoId: 1,
-      tipo: "atraso",
-      mensagem: "Verificação de atrasos sistemáticos na linha 47",
-      status: "Em andamento"
-    },
-    {
-      id: 2,
-      titulo: "Auditoria de Avarias",
-      descricao: "Inspeção de veículos com problemas mecânicos.",
-      data: "2023-11-18T14:30:00",
-      ativa: false,
-      peritoId: 2,
-      tipo: "avaria",
-      mensagem: "Verificação de problemas em freios reportados na frota 12",
-      status: "Concluída"
-    },
-    {
-      id: 3,
-      titulo: "Auditoria de Incidentes",
-      descricao: "Análise de incidentes reportados por passageiros.",
-      data: "2023-11-15T09:00:00",
-      ativa: true,
-      peritoId: 1,
-      tipo: "incidente",
-      mensagem: "Análise de incidentes com passageiros na linha 33",
-      status: "Em andamento"
-    },
-    {
-      id: 4,
-      titulo: "Auditoria de Rotas",
-      descricao: "Revisão de rotas e horários para otimização.",
-      data: "2023-11-10T16:00:00",
-      ativa: false,
-      peritoId: 3,
-      tipo: "atraso",
-      mensagem: "Revisão de otimização de rotas para diminuir atrasos",
-      status: "Concluída"
-    },
-    {
-      id: 5,
-      titulo: "Auditoria de Responsáveis",
-      descricao: "Avaliação do desempenho dos responsáveis pelas ocorrências.",
-      data: "2023-11-05T11:15:00",
-      ativa: true,
-      peritoId: 2,
-      tipo: "avalia",
-      mensagem: "Avaliação periódica de responsáveis de zona norte",
-      status: "Pendente"
-    }
+   
   ]
 };
 

@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import { auth, onAuthStateChanged } from '@/firebase';
 import MenuGeral from '@/views/MenuGeral.vue';
 import MenuOcorrencias from '@/views/MenuOcorrencias.vue';
@@ -96,7 +96,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes
 });
 

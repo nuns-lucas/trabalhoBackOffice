@@ -115,7 +115,7 @@ export default {
     const auditoriasMapeadas = computed(() => {
       return historicoFiltrado.value.map(auditoria => ({
         id: auditoria.id,
-        titulo: auditoria.titulo,
+        nome: auditoria.titulo,
         tipo: auditoria.tipo,
         data: auditoria.data,
         status: auditoria.status,

@@ -47,7 +47,7 @@ export default defineComponent({
     );
 
     const selecionarOcorrencia = (ocorrencia) => {
-      router.push({ name: 'EditarOcorrencia', params: { id: ocorrencia.id } });
+      router.push({ name: 'AuditoriaForm', params: { id: ocorrencia.id } });
     };
 
     return {

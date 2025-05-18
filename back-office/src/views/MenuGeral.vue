@@ -50,7 +50,7 @@
         <div class="col tabela">
           <!-- Atualiza ocorrenciasFiltradas com base nos filtros -->
           <ListaOcorrencias
-            :ocorrencias="ocorrenciasAbertasSemanaAtual"
+            :ocorrencias="ocorrenciasAbertas"
             @ocorrencias-filtradas="atualizarOcorrenciasFiltradas"
             @selecionarOcorrencia="selecionarOcorrencia"
           />
@@ -147,7 +147,7 @@ export default {
 
     // Inicializar as ocorrências filtradas na montagem do componente
     onMounted(() => {
-      ocorrenciasFiltradas.value = ocorrenciasAbertasSemanaAtual.value;
+      ocorrenciasFiltradas.value = ocorrenciasAbertas.value;
     });
 
     return {

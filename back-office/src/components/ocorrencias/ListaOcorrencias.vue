@@ -178,7 +178,7 @@ export default defineComponent({
 
 /* Adiciona limite de altura e scroll */
 .tabela-scroll {
-  max-height: 200px; /* Ajusta o limite de altura com base no espaço restante */
+  max-height: 500px; /* Ajusta o limite de altura com base no espaço restante */
   overflow-y: auto;
 }
 
