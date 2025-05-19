@@ -1,64 +1,48 @@
-<!-- filepath: /home/lucas/repos/kreca/pwa/src/views/Login/LoginPeritos.vue -->
 <template>
   <div class="login-perito-container">
     <div class="login-card">
       <div class="login-header">
         <div class="avatar-container">
           <div class="avatar">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 4a4 4 0 100 8 4 4 0 000-8z"></path>
-              <path d="M20 21v-2c0-2.6-2-5-6-5H10c-4 0-6 2.4-6 5v2"></path>
+            <!-- Avatar icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5BB12F">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
             </svg>
           </div>
         </div>
-        <h1>Login Perito</h1>
-        <p>Acesse sua área de trabalho</p>
+        <h1>Login de Peritos</h1>
+        <p>Acesse sua conta para continuar</p>
       </div>
-      
+
       <div class="login-form">
         <div class="input-group">
           <label for="email">Email</label>
           <div class="input-with-icon">
-            <i class="email-icon">✉️</i>
-            <input 
-              type="email" 
-              id="email"
-              v-model="email" 
-              placeholder="seu.email@exemplo.com"
-              autocomplete="email"
-            />
+            <i>@</i>
+            <input id="email" type="text" v-model="email" placeholder="Digite seu email" autocomplete="email" />
           </div>
         </div>
-        
+
         <div class="input-group">
-          <label for="senha">Senha</label>
+          <label for="password">Senha</label>
           <div class="input-with-icon">
-            <i class="lock-icon">🔒</i>
-            <input 
-              :type="mostrarSenha ? 'text' : 'password'" 
-              id="senha"
-              v-model="senha" 
-              placeholder="••••••"
-              autocomplete="current-password"
-            />
-            <button 
-              type="button" 
-              class="toggle-password" 
-              @click="mostrarSenha = !mostrarSenha">
+            <i>🔒</i>
+            <input id="password" :type="mostrarSenha ? 'text' : 'password'" v-model="senha"
+              placeholder="Digite sua senha" autocomplete="current-password" />
+            <button type="button" class="toggle-password" @click="mostrarSenha = !mostrarSenha">
               {{ mostrarSenha ? '👁️' : '👁️‍🗨️' }}
             </button>
           </div>
         </div>
-        
-        <div class="error-message" v-if="errorMessage">
-          <i class="error-icon">⚠️</i>
-          <span>{{ errorMessage }}</span>
+
+        <div v-if="errorMessage" class="error-message">
+          <span class="error-icon">!</span>
+          {{ errorMessage }}
         </div>
-        
+
         <div class="actions">
-          <button class="btn-login" @click.prevent="loginPerito">
-            Entrar <span class="arrow">→</span>
-          </button>
+          <button class="btn-login" @click="loginPerito">Entrar</button>
           <button class="btn-back" @click="voltarParaHome">
             <span class="arrow">←</span> Voltar
           </button>
@@ -69,6 +53,7 @@
 </template>
 
 <script>
+import { usePeritos } from '../../state/peritos';
 import '@/assets/cssLogin/Login.css'
 
 export default {
@@ -78,22 +63,44 @@ export default {
       email: '',
       senha: '',
       errorMessage: '',
-      mostrarSenha: false
+      mostrarSenha: false,
+      peritosCarregados: false
     }
   },
+  created() {
+    // Garantir que os peritos sejam carregados antes do login
+    this.carregarPeritos();
+  },
   methods: {
+    carregarPeritos() {
+      const { estado } = usePeritos();
+      // Verificar se os peritos já foram carregados
+      if (estado.peritos && estado.peritos.length > 0) {
+        console.log('Peritos carregados com sucesso:', estado.peritos.length);
+        this.peritosCarregados = true;
+      } else {
+        console.warn('Nenhum perito encontrado no estado');
+        this.errorMessage = 'Não foi possível carregar a lista de peritos.';
+      }
+    },
+
     loginPerito() {
       if (!this.email || !this.senha) {
         this.errorMessage = 'Por favor, preencha todos os campos';
         return;
       }
 
-      // Buscar peritos do localStorage
-      const peritos = JSON.parse(localStorage.getItem('peritos'))?.peritos || [];
-      
+      if (!this.peritosCarregados) {
+        this.carregarPeritos();
+      }
+
+      // Obter peritos do estado gerenciado pelo Vue
+      const { estado } = usePeritos();
+      const peritos = estado.peritos || [];
+
       // Verificar se existe um perito com este email/contato e senha
-      const perito = peritos.find(p => 
-        p.contacto.toLowerCase() === this.email.toLowerCase() && 
+      const perito = peritos.find(p =>
+        p.contacto.toLowerCase() === this.email.toLowerCase() &&
         p.senha === this.senha
       );
 
@@ -105,6 +112,7 @@ export default {
         this.errorMessage = 'Email ou senha incorretos';
       }
     },
+
     voltarParaHome() {
       this.$router.push('/home');
     }
@@ -127,7 +135,8 @@ export default {
 }
 
 .login-card {
-  width: 330px; /* Ajustado para a largura da moldura (390px - margens) */
+  width: 330px;
+  /* Ajustado para a largura da moldura (390px - margens) */
   background-color: white;
   border-radius: 12px;
   overflow: hidden;
