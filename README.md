@@ -47,15 +47,17 @@ cd trabalhoBackOffice
 
 1. Crie um arquivo `.env` na pasta `back-office/` com o seguinte conteúdo:
 
+```
 VITE_FIREBASE_API_KEY=your_api_key VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com VITE_FIREBASE_PROJECT_ID=your_project_id VITE_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id VITE_FIREBASE_APP_ID=your_app_id
-
+```
 
 #### Para a PWA
 
 1. Crie um arquivo `.env` na pasta `pwa/` com o seguinte conteúdo:
 
+```
 VUE_APP_FIREBASE_API_KEY=your_api_key VUE_APP_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com VUE_APP_FIREBASE_PROJECT_ID=your_project_id VUE_APP_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com VUE_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id VUE_APP_FIREBASE_APP_ID=your_app_id
-
+```
 
 ### Como obter as credenciais do Firebase
 
