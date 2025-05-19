@@ -29,16 +29,17 @@ O GuimarEyes é uma aplicação para reportar e gerenciar ocorrências em servi�
 
 6. Verifique se a instalação foi bem-sucedida abrindo um terminal e executando:
 
+```
 docker --version docker-compose --version
-
+```
 
 ## Configuração do Projeto
 
 ### 1. Clone o repositório
-
+``` git
 git clone https://github.com/nuns-lucas/trabalhoBackOffice.git 
 cd trabalhoBackOffice
-
+```
 
 ### 2. Configurar variáveis de ambiente para Firebase
 
