@@ -16,9 +16,6 @@
           <router-link to="/peritos">Menu Peritos</router-link>
         </li>
         <li>
-          <router-link to="/inserirOcorrencia">Inserir Nova Ocorrência</router-link>
-        </li>
-        <li>
           <router-link to="/materiais">Gestão de Materiais</router-link>
         </li>
         <!-- Separador visual -->

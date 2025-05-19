@@ -13,6 +13,7 @@ import AuditoriaForm from '@/views/AuditoriaForm.vue';
 import RejeitarOcorrencia from '@/views/RejeitarOcorrencia.vue';
 import CriarAuditoria from '@/views/CriarAuditoria.vue';
 import GestaoMateriais from '@/views/GestaoMateriais.vue';
+import DetalhesAuditoria from '@/views/DetalhesAuditoria.vue';
 
 const routes = [
   {
@@ -91,8 +92,13 @@ const routes = [
     name: 'GestaoMateriais',
     component: GestaoMateriais,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/auditoria/:id',
+    name: 'DetalhesAuditoria',
+    component: DetalhesAuditoria,
+    meta: { requiresAuth: true }
   }
-  
 ];
 
 const router = createRouter({

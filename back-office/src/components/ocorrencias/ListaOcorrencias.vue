@@ -80,7 +80,7 @@
           </tr>
           <tr v-if="ocorrenciasFiltradas.length === 0">
             <td colspan="6" class="text-center text-muted py-4">
-              Nenhuma ocorrência encontrada com os filtros atuais
+              Nenhum Item encontrado com os filtros atuais
             </td>
           </tr>
         </tbody>

@@ -9,13 +9,10 @@
       </div>
       <!-- Rodapé da página-->
       <div class="btn">
-        <span class="registo"><router-link to="/registo"><button class="btn-hp">Criar Conta</button></router-link></span>
-        <span class="entrar"><router-link to="/login"><button class="btn-hp">Iniciar Sessão</button></router-link></span>
+        <span class="perito"><router-link to="/login-peritos"><button class="btn-hp">Login Perito</button></router-link></span>
+        <span class="utilizador"><router-link to="/login"><button class="btn-hp">Login Utilizador</button></router-link></span>
       </div>
   </div>
- 
-
-  
 </template>
 
 <script>
@@ -24,4 +21,3 @@ export default {
   name: 'HomePage'
 }
 </script>
-  

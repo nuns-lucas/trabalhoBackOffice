@@ -66,7 +66,8 @@
                 <label for="peritos">Peritos Responsáveis*</label>
                 <!-- Mensagem de alerta quando não há peritos disponíveis -->
                 <div v-if="semPeritosDisponiveis" class="info-alerta">
-                  <p>Não há peritos disponíveis no momento. Todos os peritos estão ocupados com outras auditorias ou indisponíveis.</p>
+                  <p>Não há peritos disponíveis no momento. Todos os peritos estão ocupados com outras auditorias ou
+                    indisponíveis.</p>
                 </div>
                 <!-- Seletor de peritos apenas se houver peritos disponíveis -->
                 <div v-else class="peritos-selector">
@@ -104,7 +105,7 @@
                       {{ material.nome }} (Disponível: {{ material.quantidade }} {{ material.unidade }})
                     </option>
                   </select>
-                  <input type="number" v-model.number="quantidadeMaterial" min="1" 
+                  <input type="number" v-model.number="quantidadeMaterial" min="1"
                     :max="getMaterialDisponivel(materialSelecionado)" class="input-quantidade" />
                   <button type="button" class="btn-add" @click="adicionarMaterial" :disabled="!materialSelecionado">
                     Adicionar
@@ -116,7 +117,8 @@
                   <h4>Materiais Selecionados:</h4>
                   <div v-for="(material, index) in novaAuditoria.materiais" :key="`material-${material.materialId}`"
                     class="material-item">
-                    {{ getNomeMaterial(material.materialId) }} - {{ material.quantidade }} {{ getUnidadeMaterial(material.materialId) }}
+                    {{ getNomeMaterial(material.materialId) }} - {{ material.quantidade }} {{
+                      getUnidadeMaterial(material.materialId) }}
                     <button type="button" class="btn-remove" @click="removerMaterial(index)">
                       ×
                     </button>
@@ -138,7 +140,8 @@
               </div>
 
               <div class="form-actions">
-                <button type="submit" class="btn-primary" :disabled="semPeritosDisponiveis || novaAuditoria.peritos.length === 0">
+                <button type="submit" class="btn-primary"
+                  :disabled="semPeritosDisponiveis || novaAuditoria.peritos.length === 0">
                   Criar Auditoria
                 </button>
                 <button type="button" class="btn-secondary" @click="voltarParaDetalhes">Cancelar</button>
@@ -190,11 +193,11 @@ export default {
     const peritosComAuditoriaAtiva = computed(() => {
       // Criar uma lista de IDs dos peritos que já têm auditoria ativa
       const peritosIndisponiveisIds = [];
-      
+
       // Verifica todas as auditorias
       estadoAuditorias.auditorias.forEach(auditoria => {
         // Se a auditoria estiver ativa ou em andamento
-        if (auditoria.ativa || auditoria.status === 'Em andamento') {
+        if (auditoria.status === 'Em andamento') {
           // Adiciona o perito principal
           if (auditoria.peritoId) {
             peritosIndisponiveisIds.push(auditoria.peritoId);
@@ -209,20 +212,20 @@ export default {
           }
         }
       });
-      
+
       return peritosIndisponiveisIds;
     });
 
     // Filtrar peritos disponíveis - agora excluindo aqueles com auditorias ativas
     const peritosDisponiveis = computed(() =>
-      estadoPeritos.peritos.filter(p => 
-        p.status === 'Disponível' && 
+      estadoPeritos.peritos.filter(p =>
+        p.status === 'Disponível' &&
         !peritosComAuditoriaAtiva.value.includes(p.id)
       )
     );
 
     // Verificar se há peritos disponíveis
-    const semPeritosDisponiveis = computed(() => 
+    const semPeritosDisponiveis = computed(() =>
       peritosDisponiveis.value.length === 0
     );
 
@@ -240,11 +243,15 @@ export default {
       dataFinalizacao: '',
       descricao: '',
       ocorrenciaId: ocorrenciaId,
-      localizacao: ocorrencia.value?.paragem || '',
+      endereco: ocorrencia.value ? ocorrencia.value.endereco : '',
+      paragem: ocorrencia.value ? ocorrencia.value.paragem : '',
+      latitude: ocorrencia.value ? ocorrencia.value.latitude : '',
+      longitude: ocorrencia.value ? ocorrencia.value.longitude : '',
       data: new Date().toISOString(),
       ativa: true,
       status: "Em andamento",
-      materiais: [] // Array para armazenar os materiais
+      materiais: [], // Array para armazenar os materiais
+      imagem: null,
     });
 
     // Perito selecionado temporariamente
@@ -348,7 +355,7 @@ export default {
     // Remover perito da lista
     const removerPerito = (index) => {
       const peritoRemovido = novaAuditoria.value.peritos[index];
-      
+
       // Se estiver removendo o perito principal, redefina o peritoId
       if (peritoRemovido === novaAuditoria.value.peritoId) {
         // Se ainda houver outros peritos, selecione o primeiro como principal
@@ -363,7 +370,7 @@ export default {
           novaAuditoria.value.peritoId = null;
         }
       }
-      
+
       novaAuditoria.value.peritos.splice(index, 1);
     };
 
@@ -416,9 +423,25 @@ export default {
         novaAuditoria.value.peritoId = novaAuditoria.value.peritos[0];
       }
 
+      // Garantir que as coordenadas são capturadas
+      if (ocorrencia.value.latitude && ocorrencia.value.longitude) {
+        novaAuditoria.value.latitude = ocorrencia.value.latitude;
+        novaAuditoria.value.longitude = ocorrencia.value.longitude;
+      }
+
+      // Garantir que o endereço é capturado
+      if (ocorrencia.value.endereco) {
+        novaAuditoria.value.endereco = ocorrencia.value.endereco;
+      }
+
       // Preencher os dados da ocorrência
       if (ocorrencia.value) {
         novaAuditoria.value.descricaoOcorrencia = ocorrencia.value.mensagem;
+      }
+
+      // Importar a imagem da ocorrência para a auditoria
+      if (ocorrencia.value.foto) {
+        novaAuditoria.value.imagem = ocorrencia.value.foto;
       }
 
       // Adicionar mensagem para visualização na interface
@@ -429,14 +452,14 @@ export default {
       try {
         // 1. Criar auditoria
         const auditoriaId = criarAuditoria(novaAuditoria.value);
-        
+
         // 2. Adicionar materiais à auditoria e atualizar estoque
         if (novaAuditoria.value.materiais.length > 0) {
           // Adicionar materiais à auditoria
           if (adicionarMateriaisAuditoria) {
             adicionarMateriaisAuditoria(auditoriaId, novaAuditoria.value.materiais);
           }
-          
+
           // Atualizar o estoque de cada material
           novaAuditoria.value.materiais.forEach(material => {
             if (atualizarEstoqueMaterial) {
@@ -444,7 +467,7 @@ export default {
             }
           });
         }
-        
+
         // 3. Atualizar a ocorrência para status "Finalizada" em vez de removê-la
         if (ocorrenciaId) {
           atualizarOcorrencia(ocorrenciaId, {

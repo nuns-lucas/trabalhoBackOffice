@@ -86,12 +86,16 @@ export default {
       router.push({ name: 'EditarAuditoria', params: { id: auditoria.id } });
     };
 
-    // Função para lidar com a seleção do componente ListaOcorrencias
+    // Modificar a função de tratamento de seleção para navegar para a view de detalhes
     const tratarSelecaoAuditoria = (ocorrencia) => {
       // Encontrar a auditoria original pelo ID mapeado
       const auditoria = estado.auditorias.find(a => a.id === ocorrencia.id);
       if (auditoria) {
-        selecionarAuditoria(auditoria);
+        // Navegar para a tela de detalhes em vez da edição
+        router.push({ 
+          name: 'DetalhesAuditoria', 
+          params: { id: auditoria.id } 
+        });
       }
     };
 

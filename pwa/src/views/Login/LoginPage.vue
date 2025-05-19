@@ -19,6 +19,7 @@
 </template>
 <script>
 import '@/assets/cssLogin/Login.css'
+
 import {signInWithPopup} from 'firebase/auth'
 import {auth, provider} from '@/firebase'
 

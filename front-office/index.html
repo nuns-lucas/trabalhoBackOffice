@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Fame - One Page Multipurpose Bootstrap Theme</title>
+  <title>GuimarEyes</title>
 
   <!-- Bootstrap Core CSS -->
   <link href="asset/css/bootstrap.min.css" rel="stylesheet">
@@ -680,10 +680,9 @@
       const mensagem = document.getElementById('mensagem').value;
       const linha = document.getElementById('linha').value;
       const paragem = document.getElementById('paragem').value;
-      const fotoInput = document.getElementById('foto').value; // URL da foto
+      const fotoInput = document.getElementById('foto').value;
       const data = new Date().toISOString();
-      const status = "Aberta"; // Mudando para "Aberta" para compatibilidade com o back-office
-      const id = Date.now(); // Gerar um ID único usando timestamp
+      const id = Date.now();
 
       if (!nome || !tipo || !mensagem) {
         alert('Por favor preencha todos os campos obrigatórios.');
@@ -695,36 +694,57 @@
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
 
-          // Criar objeto completo seguindo o formato do back-office
-          const ocorrencia = {
-            id,
-            nome,
-            tipo,
-            mensagem,
-            latitude,
-            longitude,
-            data,
-            status,
-            linha: linha || '',
-            paragem: paragem || '',
-            foto: fotoInput || ''
-          };
+          // Obter o endereço a partir das coordenadas usando a API de Geocodificação do Google
+          const geocoder = new google.maps.Geocoder();
+          const latlng = { lat: latitude, lng: longitude };
 
-          // Guardar localmente com formato correto
-          guardarLocalmente(ocorrencia);
+          geocoder.geocode({ 'location': latlng }, function (results, status) {
+            let endereco = '';
+
+            if (status === 'OK') {
+              if (results[0]) {
+                // Usar o endereço formatado retornado pelo Google
+                endereco = results[0].formatted_address;
+              }
+            } else {
+              console.log('Geocoder falhou devido a: ' + status);
+            }
+
+            // Criar objeto completo com endereço
+            const ocorrencia = {
+              id,
+              nome,
+              email: "N/A",
+              tipo,
+              mensagem,
+              latitude,
+              longitude,
+              endereco, // Novo campo com o endereço formatado
+              data,
+              status: "Aberta",
+              linha: linha || '',
+              paragem: paragem || '',
+              foto: fotoInput || ''
+            };
+
+            // Guardar localmente com formato correto
+            guardarLocalmente(ocorrencia);
+          });
 
         }, function (error) {
-          // Em caso de erro na geolocalização, ainda permitir salvar sem coordenadas
+          // Em caso de erro na geolocalização
           const ocorrencia = {
             id,
             nome,
+            email: "N/A",
             tipo,
             mensagem,
             data,
-            status,
+            status: "Aberta",
             linha: linha || '',
             paragem: paragem || '',
-            foto: fotoInput || ''
+            foto: fotoInput || '',
+            endereco: 'Não disponível'
           };
 
           guardarLocalmente(ocorrencia);
@@ -735,13 +755,15 @@
         const ocorrencia = {
           id,
           nome,
+          email: "N/A",
           tipo,
           mensagem,
           data,
-          status,
+          status: "Aberta",
           linha: linha || '',
           paragem: paragem || '',
-          foto: fotoInput || ''
+          foto: fotoInput || '',
+          endereco: 'Não disponível'
         };
 
         guardarLocalmente(ocorrencia);

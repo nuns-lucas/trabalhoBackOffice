@@ -14,6 +14,9 @@
 
 <script>
 import '@/assets/cssLogin/WP.css'  // Caminho relativo para o ficheiro CSS externo
+import router from '../../router';
+
+
 export default {
   name: 'WelcomePage'
 }

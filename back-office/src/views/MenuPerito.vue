@@ -51,26 +51,20 @@
           <form @submit.prevent="salvarPerito">
             <div class="form-group">
               <label for="nome">Nome*</label>
-              <input 
-                type="text" 
-                id="nome" 
-                v-model="novoPerito.nome" 
-                required 
-                placeholder="Nome completo"
-              />
+              <input type="text" id="nome" v-model="novoPerito.nome" required placeholder="Nome completo" />
             </div>
-            
+
             <div class="form-group">
-              <label for="contacto">Contacto*</label>
-              <input 
-                type="text" 
-                id="contacto" 
-                v-model="novoPerito.contacto" 
-                required 
-                placeholder="Ex: email@email.com"
-              />
+              <label for="contacto">Email*</label>
+              <input type="text" id="contacto" v-model="novoPerito.contacto" required
+                placeholder="Ex: email@email.com" />
             </div>
-            
+
+            <div class="form-group">
+              <label for="senha">Senha*</label>
+              <input type="password" id="senha" v-model="novoPerito.senha" required placeholder="Senha para login" />
+            </div>
+
             <div class="form-group">
               <label for="status">Status*</label>
               <select id="status-perito" v-model="novoPerito.status" required>
@@ -87,7 +81,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Overlay separado com v-if para aparecer apenas quando necessário -->
     <div v-if="mostrarOffCanvas" class="off-canvas-overlay" @click="fecharOffCanvas"></div>
   </div>
@@ -101,8 +95,8 @@ import Sidebar from '@/components/layout/Sidebar.vue';
 
 export default defineComponent({
   name: 'MenuPerito',
-  components: { 
-    Sidebar 
+  components: {
+    Sidebar
   },
   setup() {
     const { estado, adicionarPerito } = usePeritos();
@@ -110,11 +104,12 @@ export default defineComponent({
 
     // Estado para o off-canvas
     const mostrarOffCanvas = ref(false);
-    
+
     // Estado para o novo perito
     const novoPerito = reactive({
       nome: '',
       contacto: '',
+      senha: '',
       status: 'Disponível',
       ocorrenciasConcluidas: 0
     });
@@ -124,7 +119,7 @@ export default defineComponent({
 
     // Lista de peritos
     const peritos = computed(() => estado.peritos);
-    
+
     // Lista de peritos filtrados
     const peritosFiltrados = computed(() => {
       if (!filtroStatus.value) {
@@ -137,14 +132,14 @@ export default defineComponent({
     const verPerfilPerito = (id) => {
       router.push({ name: 'PerfilPerito', params: { id } });
     };
-    
+
     // Abrir off-canvas
     const abrirOffCanvas = () => {
       mostrarOffCanvas.value = true;
       // Prevenir scroll na página quando o off-canvas estiver aberto
       document.body.style.overflow = 'hidden';
     };
-    
+
     // Fechar off-canvas
     const fecharOffCanvas = () => {
       mostrarOffCanvas.value = false;
@@ -154,16 +149,17 @@ export default defineComponent({
       Object.assign(novoPerito, {
         nome: '',
         contacto: '',
+        senha: '',
         status: 'Disponível',
         ocorrenciasConcluidas: 0
       });
     };
-    
+
     // Salvar novo perito
     const salvarPerito = () => {
       // Gerar ID baseado em timestamp
       const id = Date.now().toString();
-      
+
       // Criar o objeto perito
       const perito = {
         id,
@@ -172,14 +168,14 @@ export default defineComponent({
         status: novoPerito.status,
         ocorrenciasConcluidas: novoPerito.ocorrenciasConcluidas
       };
-      
+
       // Adicionar o perito ao estado usando a função do usePeritos
       adicionarPerito(perito);
-      
+
       // Fechar o off-canvas e resetar o formulário
       fecharOffCanvas();
     };
-    
+
     // Obter classe de estilo baseada no status
     const getStatusClass = (status) => {
       return status === 'Disponível' ? 'status-disponivel' : 'status-indisponivel';
