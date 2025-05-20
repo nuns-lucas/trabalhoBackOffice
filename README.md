@@ -1,4 +1,3 @@
-# XABULA-LEGAL
 # GuimarEyes - Sistema de Gestão de Ocorrências e Auditorias
 
 O GuimarEyes é uma aplicação para reportar e gerenciar ocorrências em serviços de transporte público e infraestrutura, composta por três componentes principais:
