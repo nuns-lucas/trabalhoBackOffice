@@ -8,11 +8,13 @@ body {
     align-items: center;
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
-  }
+}
   
-  .mobile-frame {
+.mobile-frame {
     width: 390px;
     height: 844px;
+    max-width: 95vw;
+    max-height: 95vh;
     background-color: white;
     border-radius: 25px;
     border: 5px solid black;
@@ -20,10 +22,27 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-  }
+    /* Preserve aspect ratio */
+    aspect-ratio: 390 / 844;
+}
 
-  .content {
+/* When screen height is limited, prioritize height */
+@media (max-height: 880px) {
+    .mobile-frame {
+        height: 95vh;
+        width: auto;
+    }
+}
+
+/* When screen width is limited, prioritize width */
+@media (max-width: 420px) {
+    .mobile-frame {
+        width: 95vw;
+        height: auto;
+    }
+}
+
+.content {
     flex: 1;
     overflow-y: auto;
-  }
-  
+}
